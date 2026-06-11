@@ -1,0 +1,2431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>100UP Solar Calculators</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1117;
+  --surface:#161b22;
+  --surface2:#1c2333;
+  --border:#2d3748;
+  --border2:#3d4f66;
+  --ink:#e6edf3;
+  --muted:#7d8590;
+  --dim:#4a5568;
+  --sig:#00c48c;
+  --sig-dim:#0d3d2e;
+  --sig-mid:#00a075;
+  --deye:#3b9eff;
+  --deye-dim:#0d2744;
+  --deye-mid:#2280d4;
+  --accent:#f0b429;
+  --accent-dim:#3d2e00;
+  --red:#ff6b6b;
+  --green:#51cf66;
+  --radius:12px;
+  --radius-sm:8px;
+  --mono:'DM Mono',monospace;
+  --sans:'DM Sans',sans-serif;
+  --display:'Syne',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* ─── HEADER ─── */
+.header{
+  border-bottom:1px solid var(--border);
+  padding:20px 28px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  background:var(--surface);
+  position:sticky;top:0;z-index:100;
+}
+.logo{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--sig),var(--deye));
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:13px;font-weight:800;color:#fff;
+  flex-shrink:0;
+}
+.header-title{font-family:var(--display);font-size:18px;font-weight:800;letter-spacing:-.3px}
+.header-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.pill{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--muted);font-family:var(--mono)}
+
+/* ─── TABS ─── */
+.tab-bar{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:0 28px;
+  display:flex;gap:2px;
+  overflow-x:auto;
+}
+.tab-bar::-webkit-scrollbar{height:3px}
+.tab-bar::-webkit-scrollbar-track{background:transparent}
+.tab-bar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.tab-btn{
+  border:none;background:transparent;color:var(--muted);
+  padding:14px 18px;font-family:var(--sans);font-size:13px;font-weight:500;
+  cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;
+  white-space:nowrap;position:relative;
+}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.active{color:var(--ink);border-bottom-color:var(--sig)}
+.tab-btn .tab-icon{margin-right:6px;font-size:12px;opacity:.7}
+
+/* ─── LAYOUT ─── */
+.wrap{max-width:1360px;margin:0 auto;padding:24px 28px}
+.layout{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}
+
+/* ─── CARDS ─── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+}
+.card-title{font-family:var(--display);font-size:16px;font-weight:800;margin-bottom:4px;letter-spacing:-.2px}
+.card-sub{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.card-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+
+/* ─── FORM ELEMENTS ─── */
+.field{margin-bottom:14px}
+.field-label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+.field input,.field select{
+  width:100%;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:9px 12px;
+  color:var(--ink);font-family:var(--mono);font-size:13px;
+  transition:border-color .15s,box-shadow .15s;
+}
+.field input:focus,.field select:focus{
+  outline:none;border-color:var(--sig);
+  box-shadow:0 0 0 3px rgba(0,196,140,.1);
+}
+.field select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237d8590' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field-group-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+
+/* ─── BUTTONS ─── */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  border:none;border-radius:var(--radius-sm);
+  padding:10px 16px;font-family:var(--sans);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .15s;
+}
+.btn-primary{background:var(--sig);color:#fff}
+.btn-primary:hover{background:var(--sig-mid)}
+.btn-secondary{background:var(--surface2);border:1px solid var(--border);color:var(--ink)}
+.btn-secondary:hover{border-color:var(--border2)}
+.btn-full{width:100%;justify-content:center}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+/* ─── BADGES ─── */
+.badge-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.badge{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:20px;padding:3px 9px;font-size:11px;color:var(--muted);
+  font-family:var(--mono);
+}
+
+/* ─── KPI STRIP ─── */
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+.kpi{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 14px;
+}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
+.kpi-value{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--ink)}
+
+/* ─── RESULT CARDS ─── */
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.result-card{
+  border-radius:var(--radius);border:1px solid var(--border);
+  overflow:hidden;background:var(--surface);
+}
+.result-card.sig .result-head{border-bottom:3px solid var(--sig)}
+.result-card.deye .result-head{border-bottom:3px solid var(--deye)}
+.result-head{padding:16px 18px 14px}
+.result-brand{font-family:var(--display);font-size:14px;font-weight:800;letter-spacing:-.1px;margin-bottom:6px}
+.result-card.sig .result-brand{color:var(--sig)}
+.result-card.deye .result-brand{color:var(--deye)}
+.result-price{font-family:var(--mono);font-size:30px;font-weight:500;letter-spacing:-1px;color:var(--ink)}
+.result-price.no-pass{font-size:16px;color:var(--red)}
+
+/* ─── COST TABLE ─── */
+.cost-table{padding:14px 18px;font-size:12px}
+.cost-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--border)}
+.cost-row:last-child{border-bottom:none}
+.cost-row.subtotal{border-top:1px solid var(--border2);margin-top:4px;padding-top:8px}
+.cost-row.total{background:var(--surface2);margin:8px -18px -14px;padding:10px 18px 14px;border-radius:0 0 var(--radius) var(--radius)}
+.cost-row.total .cost-label,.cost-row.total .cost-val{font-weight:600;font-family:var(--mono);font-size:13px}
+.cost-label{color:var(--muted)}
+.cost-val{font-family:var(--mono);color:var(--ink);text-align:right;font-size:11px}
+.cost-row.section-header .cost-label{color:var(--ink);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+.cost-row.rebate .cost-val{color:var(--green)}
+.cost-row.rebate .cost-label{color:var(--green)}
+.cost-row.bold-row .cost-label,.cost-row.bold-row .cost-val{color:var(--ink);font-weight:600}
+.cost-row.margin-row{background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.2);border-radius:6px;margin:3px 0;padding:7px 10px}
+.cost-row.margin-row .cost-label{color:var(--accent);font-weight:700;font-size:12px}
+.cost-row.margin-row .cost-val{color:var(--accent);font-weight:700;font-size:13px}
+
+/* ─── QUOTE BLOCK ─── */
+.quote-wrapper{margin-top:14px}
+.quote-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  grid-column:1/-1;
+}
+.quote-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  background:var(--surface2);
+}
+.quote-head-title{font-family:var(--display);font-size:14px;font-weight:800}
+.quote-summary{padding:12px 18px;display:flex;gap:20px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.quote-opt{font-size:12px;color:var(--muted)}
+.quote-opt strong{color:var(--ink);font-family:var(--mono)}
+.quote-opt .sig-tag{color:var(--sig)}
+.quote-opt .deye-tag{color:var(--deye)}
+.quote-body{padding:14px 18px}
+.quote-textarea{
+  width:100%;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px;color:var(--ink);
+  font-family:var(--mono);font-size:12px;resize:vertical;min-height:180px;line-height:1.6;
+}
+.quote-textarea:focus{outline:none;border-color:var(--sig)}
+.quote-actions{margin-top:10px;display:flex;gap:8px}
+
+/* ─── RANK TABLE ─── */
+.rank-table-wrap{margin-top:16px;overflow-x:auto}
+.rank-table{width:100%;border-collapse:collapse;font-size:12px}
+.rank-table th{background:var(--surface2);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.rank-table td{padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--ink)}
+.rank-table tr:hover td{background:var(--surface2)}
+.rank-table .rank-num{color:var(--muted);font-size:10px}
+.rank-table .brand-sig{color:var(--sig)}
+.rank-table .brand-deye{color:var(--deye)}
+.rank-table .price-col{color:var(--accent);font-weight:500}
+
+/* ─── ALERTS ─── */
+.alert{border-radius:var(--radius-sm);padding:12px 14px;margin:10px 0;font-size:12px;line-height:1.5}
+.alert-warn{background:var(--accent-dim);border:1px solid rgba(240,180,41,.25);color:#f0c060}
+.alert-warn ul{margin-left:16px;margin-top:6px}
+.alert-warn li{margin:3px 0}
+.alert-good{background:rgba(81,207,102,.06);border:1px solid rgba(81,207,102,.25);color:var(--green)}
+.alert-info{background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
+.alert-title{font-weight:600;display:block;margin-bottom:4px}
+
+/* ─── ASSUMPTIONS TABLE ─── */
+.ass-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.ass-table th{background:var(--surface2);color:var(--muted);text-align:left;padding:8px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border)}
+.ass-table td{padding:7px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.ass-table tr:hover td{background:rgba(255,255,255,.025)}
+.ass-label{color:var(--ink);font-size:12px}
+.ass-desc{color:var(--muted);font-size:10px;margin-top:2px;line-height:1.4}
+.ass-unit{color:var(--muted);font-family:var(--mono);font-size:11px}
+.ass-input{
+  background:var(--bg);border:1px solid var(--border);border-radius:6px;
+  padding:5px 8px;color:var(--ink);font-family:var(--mono);font-size:12px;
+  width:120px;text-align:right;transition:border-color .15s,background .15s;
+}
+.ass-input:focus{outline:none;border-color:var(--sig);box-shadow:0 0 0 3px rgba(0,196,140,.1)}
+.ass-input.changed{border-color:var(--accent);background:rgba(240,180,41,.06)}
+.ass-section-row td{
+  background:var(--surface2);padding:10px 12px 8px;border-bottom:1px solid var(--border2);
+  border-top:1px solid var(--border2);
+}
+.ass-section-row:first-child td{border-top:none}
+.ass-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.ass-section-label:after{content:'';flex:1;height:1px;background:var(--border2)}
+.ass-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.ass-changes-badge{
+  background:rgba(240,180,41,.12);border:1px solid rgba(240,180,41,.3);
+  border-radius:20px;padding:3px 10px;font-size:11px;font-family:var(--mono);
+  color:var(--accent);display:none;
+}
+.ass-preview-strip{
+  background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:12px 16px;margin-bottom:16px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;
+}
+.ass-preview-kpi{text-align:center}
+.ass-preview-val{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--ink)}
+.ass-preview-label{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-top:2px}
+.ass-preview-sig{color:var(--sig)}
+.ass-preview-deye{color:var(--deye)}
+/* ─── REGION NOTICE ─── */
+.region-notice{
+  background:rgba(240,180,41,.07);border:1px solid rgba(240,180,41,.25);
+  border-radius:var(--radius-sm);padding:10px 16px;margin:0 0 16px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.region-notice-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.region-notice-body{flex:1}
+.region-notice-title{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.2px;margin-bottom:2px}
+.region-notice-text{font-size:11px;color:var(--muted);line-height:1.5}
+/* ─── TAB USAGE BADGES ─── */
+.tab-tags{display:flex;flex-wrap:wrap;gap:4px}
+.tab-tag{
+  display:inline-flex;align-items:center;gap:3px;
+  border-radius:10px;padding:2px 7px;font-size:9px;font-weight:600;
+  letter-spacing:.3px;white-space:nowrap;border:1px solid transparent;
+}
+.tab-tag.tt-fixed  {background:rgba(0,196,140,.12); border-color:rgba(0,196,140,.3);  color:#00c48c}
+.tab-tag.tt-opt    {background:rgba(240,180,41,.12); border-color:rgba(240,180,41,.3); color:#f0b429}
+.tab-tag.tt-manual {background:rgba(160,120,255,.12);border-color:rgba(160,120,255,.3);color:#a78bfa}
+.tab-tag.tt-ground {background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.3);color:#ff6b6b}
+.tab-tag.tt-single {background:rgba(59,158,255,.12); border-color:rgba(59,158,255,.3);  color:#3b9eff}
+.tab-tag.tt-qe     {background:rgba(81,207,102,.12); border-color:rgba(81,207,102,.3);  color:#51cf66}
+.ass-table .used-col{width:200px}
+
+/* ─── UTILS ─── */
+.hidden{display:none}
+.section-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-label:after{content:'';flex:1;height:1px;background:var(--border)}
+.inline-note{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
+
+/* ─── QUICK ESTIMATE ─── */
+.qe-hero{
+  max-width:780px;margin:0 auto;padding:32px 0 16px;
+}
+.qe-title{font-family:var(--display);font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+.qe-sub{font-size:13px;color:var(--muted);line-height:1.6;max-width:520px}
+
+.occupant-picker{
+  display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 10px;
+}
+.occ-btn{
+  border:1px solid var(--border);background:var(--surface2);
+  border-radius:var(--radius-sm);padding:0;cursor:pointer;
+  transition:all .18s;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:4px;width:76px;height:76px;position:relative;
+  font-family:var(--sans);
+}
+.occ-btn:hover{border-color:var(--border2);background:var(--surface)}
+.occ-btn.active{border-color:var(--sig);background:rgba(0,196,140,.08);box-shadow:0 0 0 3px rgba(0,196,140,.15)}
+.occ-icon{font-size:22px;line-height:1}
+.occ-label{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.4px;text-transform:uppercase}
+.occ-btn.active .occ-label{color:var(--sig)}
+.occ-check{
+  position:absolute;top:4px;right:4px;
+  width:14px;height:14px;background:var(--sig);
+  border-radius:50%;display:none;align-items:center;justify-content:center;
+  font-size:8px;color:#fff;
+}
+.occ-btn.active .occ-check{display:flex}
+
+.qe-load-summary{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  margin-bottom:20px;font-size:12px;color:var(--muted);
+}
+.qe-load-val{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--sig)}
+.qe-load-eq{font-size:11px;color:var(--muted)}
+
+.qe-result-panel{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;margin-top:8px;
+}
+.qe-result-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;border-bottom:1px solid var(--border);
+  background:linear-gradient(90deg,rgba(0,196,140,.05),transparent);
+}
+.qe-result-label{font-family:var(--display);font-size:13px;font-weight:800;color:var(--sig);text-transform:uppercase;letter-spacing:.5px}
+.qe-result-mode{font-size:11px;color:var(--muted);font-family:var(--mono)}
+
+.qe-specs{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+  border-bottom:1px solid var(--border);
+}
+.qe-spec{
+  padding:20px 22px;border-right:1px solid var(--border);
+}
+.qe-spec:last-child{border-right:none}
+.qe-spec-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px}
+.qe-spec-val{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--ink)}
+.qe-spec-unit{font-size:12px;color:var(--muted);margin-top:2px}
+
+.qe-price-bar{
+  display:grid;grid-template-columns:1fr 1fr;
+}
+.qe-price-cell{
+  padding:22px;
+}
+.qe-price-cell:first-child{border-right:1px solid var(--border)}
+.qe-price-brand{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
+.qe-price-cell.sig-cell .qe-price-brand{color:var(--sig)}
+.qe-price-cell.deye-cell .qe-price-brand{color:var(--deye)}
+.qe-price-amount{font-family:var(--mono);font-size:28px;font-weight:500;color:var(--ink);letter-spacing:-1px}
+.qe-price-note{font-size:11px;color:var(--muted);margin-top:4px}
+
+.qe-range-bar{
+  padding:18px 22px;border-top:1px solid var(--border);
+  background:var(--surface2);display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.qe-range-label{font-size:11px;color:var(--muted)}
+.qe-range-track{flex:1;height:6px;background:var(--border);border-radius:3px;position:relative;min-width:120px}
+.qe-range-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--deye),var(--sig));position:absolute;left:0;top:0}
+.qe-range-vals{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;margin-top:4px}
+.qe-range-min{color:var(--deye)}
+.qe-range-max{color:var(--sig)}
+
+.qe-disclaimer{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:14px 16px;
+  font-size:11px;color:var(--muted);line-height:1.6;margin-top:16px;
+}
+.qe-disclaimer strong{color:var(--ink)}
+
+.qe-compare{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;
+}
+.qe-compare-label{
+  font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  padding:10px 22px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.qe-compare-label.no-gen{color:var(--ink);background:rgba(255,255,255,.03)}
+.qe-compare-label.with-gen{color:var(--accent);background:rgba(240,180,41,.05)}
+.qe-save-badge{
+  margin-left:auto;background:rgba(81,207,102,.15);
+  border:1px solid rgba(81,207,102,.3);color:var(--green);
+  border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;
+  font-family:var(--mono);letter-spacing:0;
+}
+@media(max-width:700px){
+  .qe-compare{grid-template-columns:1fr}
+}
+.qe-no-result{
+  padding:40px;text-align:center;color:var(--muted);font-size:13px;
+}
+
+@media(max-width:640px){
+  .qe-specs{grid-template-columns:1fr 1fr}
+  .qe-spec:nth-child(2){border-right:none}
+  .qe-spec:last-child{border-top:1px solid var(--border);grid-column:1/-1}
+  .qe-price-amount{font-size:22px}
+}
+
+@media(max-width:1000px){
+  .layout,.results-grid{grid-template-columns:1fr}
+  .kpi-strip{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .wrap{padding:16px}
+  .header{padding:14px 16px}
+  .tab-bar{padding:0 16px}
+  .field-row{grid-template-columns:1fr}
+  .kpi-strip{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">☀</div>
+  <div>
+    <div class="header-title">100UP Solar Calculators</div>
+    <div class="header-sub">Sigenergy &amp; Deye · Updated assumptions</div>
+  </div>
+  <div class="header-right">
+    <span class="pill">Auto battery sizing</span>
+    <span class="pill">Ground mount included</span>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn" onclick="showCalc('qe',this)"><span class="tab-icon">🏠</span>Quick Estimate</button>
+  <button class="tab-btn" onclick="showCalc('main',this)"><span class="tab-icon">📐</span>Calculator</button>
+  <button class="tab-btn" onclick="showCalc('three',this)"><span class="tab-icon">🔌</span>3 Phase</button>
+  <button class="tab-btn" onclick="showCalc('opt',this)"><span class="tab-icon">⚡</span>Optimiser</button>
+  <button class="tab-btn" onclick="showCalc('gmopt',this)"><span class="tab-icon">🏗️</span>GM Optimiser</button>
+  <button class="tab-btn" onclick="showCalc('ass',this)"><span class="tab-icon">⚙️</span>Assumptions</button>
+  <button class="tab-btn" onclick="showCalc('gmbom',this)"><span class="tab-icon">⛏️</span>GM BOM</button>
+</div>
+
+<div class="wrap">
+
+  <!-- ─── REGION / MODEL NOTICE ─── -->
+  <div class="region-notice">
+    <div class="region-notice-icon">📍</div>
+    <div class="region-notice-body">
+      <div class="region-notice-title">Ballarat, Victoria — July worst-case solar model</div>
+      <div class="region-notice-text">
+        All calculations are based on <strong>July</strong> — the worst solar performance month for the <strong>Ballarat, Victoria</strong> region.
+        A system that passes the July hourly simulation will comfortably cover energy needs for the rest of the year.
+        Prices, rebates, and system sizing are indicative only and may vary with site conditions.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MAIN CALCULATOR ─── -->
+  <section id="main" class="calc hidden">
+    <div class="layout">
+      <div class="card">
+        <div class="card-title">System Calculator</div>
+        <div class="card-sub">Results update automatically as you type. Battery sizing uses a July hourly simulation (worst month, Ballarat VIC).</div>
+
+        <div class="field"><label class="field-label">Daily load (kWh/day)</label><input id="mainLoad" type="number" value="20" step="0.5" oninput="scheduleMain()"></div>
+
+        <!-- Battery mode toggle -->
+        <div class="field">
+          <label class="field-label">Battery sizing</label>
+          <select id="mainBattMode" onchange="mainModeChange()">
+            <option value="auto">Auto — find minimum that survives July</option>
+            <option value="manual">Manual — enter battery units per brand</option>
+          </select>
+        </div>
+
+        <!-- Auto battery fields -->
+        <div id="mainAutoFields">
+          <div class="field-row">
+            <div class="field"><label class="field-label">Starting units</label><input id="mainStartUnits" type="number" value="1" step="1" oninput="scheduleMain()"></div>
+            <div class="field"><label class="field-label">Max units to try</label><input id="mainMaxUnits" type="number" value="40" step="1" oninput="scheduleMain()"></div>
+          </div>
+        </div>
+
+        <!-- Manual battery fields -->
+        <div id="mainManualFields" style="display:none">
+          <div class="field-row">
+            <div class="field"><label class="field-label">Sig battery units</label><input id="mainSigUnits" type="number" value="3" step="1" oninput="scheduleMain()"></div>
+            <div class="field"><label class="field-label">Deye battery units</label><input id="mainDeyeUnits" type="number" value="5" step="1" oninput="scheduleMain()"></div>
+          </div>
+        </div>
+
+        <!-- Panel inputs — roof only -->
+        <div id="mainRoofOnlyFields">
+          <div class="field"><label class="field-label">Number of panels</label><input id="mainPanels" type="number" value="36" step="1" oninput="scheduleMain()"></div>
+        </div>
+
+        <!-- Panel inputs — ground mount split -->
+        <div id="mainGroundFields" style="display:none">
+          <div class="field-group-title" style="margin-top:12px">Panel split</div>
+          <div class="field-row">
+            <div class="field"><label class="field-label">Roof panels</label><input id="mainRoofPanels" type="number" value="24" step="1" oninput="scheduleMain()"></div>
+            <div class="field"><label class="field-label">Ground panels</label><input id="mainGmPanels" type="number" value="12" step="1" oninput="scheduleMain()"></div>
+          </div>
+          <div class="field"><label class="field-label">Total panels</label><input id="mainTotalPanels" type="number" readonly style="opacity:.5;cursor:not-allowed"></div>
+        </div>
+
+        <!-- Inverter config -->
+        <div class="field" style="margin-top:10px">
+          <label class="field-label">Inverter config</label>
+          <select id="mainInvConfig" onchange="scheduleMain()">
+            <option value="auto">Auto — best size for panel kW</option>
+            <option value="dual8">Dual 8kW — force 2 × 8kW inverters</option>
+          </select>
+        </div>
+
+        <!-- Ground mount toggle -->
+        <div style="margin-top:10px;display:flex;align-items:center;gap:10px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--muted)">
+            <input type="checkbox" id="mainGroundCheck" onchange="mainGroundChange()" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer">
+            <span>Include ground mount panels</span>
+          </label>
+        </div>
+
+        <div class="badge-row" style="margin-top:14px">
+          <span class="badge">Auto-run</span>
+          <span class="badge">Sig &amp; Deye</span>
+          <span class="badge">July worst-case · Ballarat VIC</span>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Summary</div>
+        <div id="mainKpis" class="kpi-strip"></div>
+        <div class="section-label">System results</div>
+        <div id="mainResults" class="results-grid"></div>
+        <div class="quote-wrapper"><div id="mainQuotes"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── OPTIMISER ─── -->
+  <section id="opt" class="calc hidden">
+    <div class="layout">
+      <div class="card">
+        <div class="card-title">Value Optimiser</div>
+        <div class="card-sub">Tries every panel/battery combination and finds the lowest price for each brand using the July worst-case simulation (Ballarat VIC). Results update automatically.</div>
+        <div class="field"><label class="field-label">Daily load (kWh/day)</label><input id="optLoad" type="number" value="20" step="0.5" oninput="scheduleOpt()"></div>
+
+        <!-- Advanced toggle -->
+        <div style="margin-top:12px">
+          <button class="btn btn-secondary btn-sm" onclick="toggleOptAdvanced(this)" style="width:100%;justify-content:space-between">
+            <span>⚙ Advanced search options</span><span id="optAdvIcon">▸</span>
+          </button>
+        </div>
+        <div id="optAdvanced" style="display:none;margin-top:10px">
+          <div class="field-row">
+            <div class="field"><label class="field-label">Min panels</label><input id="minPanels" type="number" value="12" step="1" oninput="scheduleOpt()"></div>
+            <div class="field"><label class="field-label">Max panels</label><input id="maxPanels" type="number" value="120" step="1" oninput="scheduleOpt()"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label class="field-label">Panel step</label><input id="panelStep" type="number" value="1" step="1" oninput="scheduleOpt()"></div>
+            <div class="field"><label class="field-label">Max battery units</label><input id="optMaxUnits" type="number" value="40" step="1" oninput="scheduleOpt()"></div>
+          </div>
+        </div>
+
+        <div class="badge-row" style="margin-top:14px">
+          <span class="badge">Auto-run</span>
+          <span class="badge">Sig vs Deye</span>
+          <span class="badge">Best value wins</span>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Summary</div>
+        <div id="optKpis" class="kpi-strip"></div>
+        <div class="section-label">Best options</div>
+        <div id="optResults" class="results-grid"></div>
+        <div class="quote-wrapper"><div id="optQuotes"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── GM OPTIMISER ─── -->
+  <section id="gmopt" class="calc hidden">
+    <div class="layout">
+      <div class="card">
+        <div class="card-title">Ground Mount Optimiser</div>
+        <div class="card-sub">Tries every roof + ground panel combination and finds the lowest price for each brand using the July worst-case simulation (Ballarat VIC). Results update automatically.</div>
+
+        <div class="field"><label class="field-label">Daily load (kWh/day)</label><input id="gmoptLoad" type="number" value="20" step="0.5" oninput="scheduleGmOpt()"></div>
+
+        <div class="field-group-title" style="margin-top:14px">Roof panels range</div>
+        <div class="field-row">
+          <div class="field"><label class="field-label">Min roof panels</label><input id="gmoptMinRoof" type="number" value="0" step="1" oninput="scheduleGmOpt()"></div>
+          <div class="field"><label class="field-label">Max roof panels</label><input id="gmoptMaxRoof" type="number" value="0" step="1" oninput="scheduleGmOpt()"></div>
+        </div>
+
+        <div class="field-group-title" style="margin-top:10px">Ground panels range</div>
+        <div class="field-row">
+          <div class="field"><label class="field-label">Min ground panels</label><input id="gmoptMinGm" type="number" value="0" step="1" oninput="scheduleGmOpt()"></div>
+          <div class="field"><label class="field-label">Max ground panels</label><input id="gmoptMaxGm" type="number" value="80" step="1" oninput="scheduleGmOpt()"></div>
+        </div>
+
+        <!-- Advanced toggle -->
+        <div style="margin-top:12px">
+          <button class="btn btn-secondary btn-sm" onclick="toggleGmOptAdvanced(this)" style="width:100%;justify-content:space-between">
+            <span>⚙ Advanced search options</span><span id="gmoptAdvIcon">▸</span>
+          </button>
+        </div>
+        <div id="gmoptAdvanced" style="display:none;margin-top:10px">
+          <div class="field-row">
+            <div class="field"><label class="field-label">Panel step</label><input id="gmoptStep" type="number" value="1" step="1" oninput="scheduleGmOpt()"></div>
+            <div class="field"><label class="field-label">Max battery units</label><input id="gmoptMaxUnits" type="number" value="40" step="1" oninput="scheduleGmOpt()"></div>
+          </div>
+          <div class="field"><label class="field-label">Min total panels</label><input id="gmoptMinTotal" type="number" value="12" step="1" oninput="scheduleGmOpt()" placeholder="Skip combos below this total"></div>
+        </div>
+
+        <div class="badge-row" style="margin-top:14px">
+          <span class="badge">Auto-run</span>
+          <span class="badge">Roof + Ground</span>
+          <span class="badge">July worst-case · Ballarat VIC</span>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Summary</div>
+        <div id="gmoptKpis" class="kpi-strip"></div>
+        <div class="section-label">Best options</div>
+        <div id="gmoptResults" class="results-grid"></div>
+        <div class="quote-wrapper"><div id="gmoptQuotes"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 3 PHASE ─── -->
+  <section id="three" class="calc hidden">
+    <div class="layout">
+      <div class="card">
+        <div class="card-title">3 Phase System Calculator</div>
+        <div class="card-sub">Same panels, batteries, costs and rebates as the standard calculator. Inverters are 3-phase: Deye 12kW or Sigenergy 15/20/30kW (smallest that fits is selected automatically). Results update live.</div>
+
+        <div class="field"><label class="field-label">Daily load (kWh/day)</label><input id="three3phLoad" type="number" value="40" step="0.5" oninput="schedule3ph()"></div>
+
+        <div class="field">
+          <label class="field-label">Battery sizing</label>
+          <select id="three3phBattMode" onchange="three3phModeChange()">
+            <option value="auto">Auto — find minimum that survives July</option>
+            <option value="manual">Manual — enter battery units per brand</option>
+          </select>
+        </div>
+
+        <div id="three3phAutoFields">
+          <div class="field-row">
+            <div class="field"><label class="field-label">Starting units</label><input id="three3phStartUnits" type="number" value="1" step="1" oninput="schedule3ph()"></div>
+            <div class="field"><label class="field-label">Max units to try</label><input id="three3phMaxUnits" type="number" value="40" step="1" oninput="schedule3ph()"></div>
+          </div>
+        </div>
+
+        <div id="three3phManualFields" style="display:none">
+          <div class="field-row">
+            <div class="field"><label class="field-label">Sig battery units</label><input id="three3phSigUnits" type="number" value="3" step="1" oninput="schedule3ph()"></div>
+            <div class="field"><label class="field-label">Deye battery units</label><input id="three3phDeyeUnits" type="number" value="5" step="1" oninput="schedule3ph()"></div>
+          </div>
+        </div>
+
+        <div class="field"><label class="field-label">Number of panels</label><input id="three3phPanels" type="number" value="60" step="1" oninput="schedule3ph()"></div>
+
+        <div class="badge-row" style="margin-top:14px">
+          <span class="badge">3-phase</span>
+          <span class="badge">Sig 15/20/30kW</span>
+          <span class="badge">Deye 12kW</span>
+          <span class="badge">Auto-run</span>
+        </div>
+        <div class="alert alert-info" style="margin-top:14px">Sigenergy 3-phase uses a $1,800 gateway (1 per ≤3 inverters). All inverter sizes tried — smallest that needs fewest units wins.</div>
+      </div>
+      <div>
+        <div class="section-label">Summary</div>
+        <div id="three3phKpis" class="kpi-strip"></div>
+        <div class="section-label">System results</div>
+        <div id="three3phResults" class="results-grid"></div>
+        <div class="quote-wrapper"><div id="three3phQuotes"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ASSUMPTIONS ─── -->
+  <section id="ass" class="calc hidden">
+    <div class="card">
+      <div class="card-title">Editable Assumptions</div>
+      <div class="card-sub">Adjust any value — highlighted in amber when changed from default. Click Save to apply to all calculators and persist in this browser.</div>
+
+      <!-- Live preview strip -->
+      <div class="ass-preview-strip" id="assPreviewStrip">
+        <div style="font-size:11px;color:var(--muted);white-space:nowrap">Live preview · 30 panels, 3 Sig / 5 Deye units</div>
+        <div class="ass-preview-kpi"><div class="ass-preview-val ass-preview-sig" id="prevSigPrice">—</div><div class="ass-preview-label">Sigenergy</div></div>
+        <div class="ass-preview-kpi"><div class="ass-preview-val ass-preview-deye" id="prevDeyePrice">—</div><div class="ass-preview-label">Deye</div></div>
+        <div class="ass-preview-kpi"><div class="ass-preview-val" id="prevSolarRebate">—</div><div class="ass-preview-label">Solar rebate</div></div>
+        <div class="ass-preview-kpi"><div class="ass-preview-val" id="prevBattRebate">—</div><div class="ass-preview-label">Batt rebate</div></div>
+        <div class="ass-preview-kpi"><div class="ass-preview-val" id="prevMarginPct">—</div><div class="ass-preview-label">Margin</div></div>
+      </div>
+
+      <div id="assumptionsTable"></div>
+      <div class="ass-actions">
+        <button class="btn btn-primary" id="saveAssBtn" onclick="applyAssumptions()">💾 Save assumptions</button>
+        <button class="btn btn-secondary" onclick="resetAssumptions()">↺ Reset to defaults</button>
+        <button class="btn btn-secondary" onclick="exportAssumptions()" title="Download assumptions as a JSON file you can reimport anytime">⬇ Export</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('importAssFile').click()" title="Load a previously exported assumptions file">⬆ Import</button>
+        <input type="file" id="importAssFile" accept=".json" style="display:none" onchange="importAssumptions(this)">
+        <span class="ass-changes-badge" id="assChangesBadge">0 changes</span>
+        <span id="saveConfirm" style="display:none;align-items:center;gap:6px;font-size:12px;color:var(--green);font-weight:600">✓ Saved!</span>
+      </div>
+      <div class="alert alert-info" style="margin-top:16px">Battery rebate is calculated in tiers: first 14kWh at Tier 1, 14–28kWh at Tier 2, 28–50kWh at Tier 3, then 0 after 50kWh. Solar rebate uses editable STCs per kW and STC price. One inverter is used when the solar array fits within its capacity (inverter kW × oversizing %); additional inverters are added as needed.</div>
+    </div>
+  </section>
+
+
+  <!-- ─── QUICK ESTIMATE ─── -->
+  <section id="qe" class="calc">
+    <div class="qe-hero">
+      <div class="qe-title">Quick System Estimate</div>
+      <div class="qe-sub">Select bedrooms or number of people — they stay in sync. We use <strong style="color:var(--ink)">bedrooms + 1 = people</strong> and calculate <strong style="color:var(--ink)">5 kWh base + 5 kWh per person</strong>. Shows two options side by side: fully off-grid vs a smaller system where a generator covers an adjustable share of daily load. Prices shown are after all rebates.</div>
+
+      <div style="margin-top:24px">
+        <div class="field-group-title" style="margin-top:0">How many bedrooms?</div>
+        <div class="occupant-picker" id="bedroomPicker"></div>
+        <div class="field-group-title" style="margin-top:16px">Or select number of people</div>
+        <div class="occupant-picker" id="occPicker"></div>
+        <div class="qe-load-summary" id="qeLoadSummary" style="display:none">
+          <div>
+            <div class="qe-load-val" id="qeLoadVal">—</div>
+            <div class="qe-load-eq" id="qeLoadEq"></div>
+          </div>
+          <div style="border-left:1px solid var(--border);padding-left:12px;color:var(--muted);font-size:11px;line-height:1.8" id="qeLoadBreakdown"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:16px 0;flex-wrap:wrap">
+        <label style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap">⛽ Generator covers</label>
+        <input id="qeGenPct" type="range" min="0" max="50" step="5" value="25"
+          style="flex:1;min-width:120px;max-width:200px;accent-color:var(--accent)"
+          oninput="qeGenPctChange(this.value)">
+        <span id="qeGenPctVal" style="font-family:var(--mono);font-size:15px;font-weight:500;color:var(--accent);min-width:36px">25%</span>
+        <span style="font-size:11px;color:var(--muted)">of daily load</span>
+      </div>
+
+      <div id="qeResult">
+        <div class="qe-no-result">Select number of occupants above to see a system estimate</div>
+      </div>
+
+      <div class="qe-disclaimer" id="qeDisclaimer" style="display:none">
+        <strong>Indicative pricing only.</strong> This estimate uses our standard assumptions and finds the minimum battery size that survives a <strong>July worst-case hourly simulation for Ballarat, Victoria</strong> — the hardest solar month in this region. A system that passes July will cover the rest of the year. Prices shown are after solar and battery STCs. Actual pricing depends on site conditions, roof space available, travel, and other site-specific factors. Use the detailed calculators for accurate quotes.
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── GM BOM CALCULATOR ─── -->
+  <section id="gmbom" class="calc hidden">
+    <div class="card">
+      <div class="card-title">⛏️ Ground Mount BOM Calculator</div>
+      <div class="card-sub">Enter panel dimensions and array configuration to generate a parts list for a Renewables Design ground mount system.</div>
+
+      <div class="field-group">
+        <div class="field-group-title">Panel Dimensions</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field">
+            <label class="field-label">Panel Width (mm)</label>
+            <input id="gmPanelWidth" type="number" value="1134" step="1" oninput="calcGmBom()">
+          </div>
+          <div class="field">
+            <label class="field-label">Panel Thickness (mm)</label>
+            <select id="gmPanelThick" onchange="calcGmBom()" style="height:36px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--ink);font-size:13px;width:100%">
+              <option value="35" selected>35mm</option>
+              <option value="30">30mm</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Panel Power (W)</label>
+            <input id="gmPanelPower" type="number" value="490" step="1" oninput="calcGmBom()">
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-group-title">Array Configuration</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field">
+            <label class="field-label">Panels per row</label>
+            <input id="gmPanelsPerRow" type="number" value="6" step="1" min="1" oninput="calcGmBom()">
+          </div>
+          <div class="field">
+            <label class="field-label">Number of arrays</label>
+            <input id="gmNumArrays" type="number" value="1" step="1" min="1" oninput="calcGmBom()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary KPIs -->
+      <div id="gmKpis" class="kpi-strip" style="margin-bottom:16px"></div>
+
+      <!-- BOM Table -->
+      <div id="gmBomWrap" style="margin-top:4px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Bill of Materials</div>
+          <div style="display:flex;gap:8px">
+            <button onclick="gmResetCosts()" title="Overwrite all unit costs with the L&amp;H quote 0066286481 (03-06-26) prices" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;border:1px solid var(--border2);background:var(--surface2);color:var(--ink);font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.2px">
+            ↺ L&amp;H Quote Prices
+          </button>
+          <button onclick="printGmBom()" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.2px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Print BOM
+          </button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="rank-table" style="width:100%;min-width:700px">
+            <thead>
+              <tr>
+                <th style="width:90px">Part No.</th>
+                <th>Description</th>
+                <th style="width:60px">SKU</th>
+                <th style="text-align:right;width:60px">Per Array</th>
+                <th style="text-align:right;width:60px">Total Qty</th>
+                <th style="text-align:right;width:75px">Total kg</th>
+                <th style="text-align:right;width:90px">Unit Cost</th>
+                <th style="text-align:right;width:90px">Total Cost</th>
+              </tr>
+            </thead>
+            <tbody id="gmBomBody"></tbody>
+            <tfoot id="gmBomFoot"></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-top:16px;font-size:11px">
+        Spacings and overhang use fixed defaults: <strong>Spacing 2700mm · Overhang 300mm · Rail length 5800mm</strong>. End clamp part number depends on panel thickness (30mm → 302-0058, 35mm → 302-0059). Default unit costs are ex-GST from L&amp;H Wendouree quote <strong>0066286481 (03-06-26)</strong> — edit any cell to override (saved in this browser).
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// DEFAULT_A — keys only, all values zero. Real values come from localStorage (saved assumptions).
+// Never hardcode business values here — they will override what the user has saved.
+const DEFAULT_A = {"panelW": 0, "panelCost": 0, "panelInstallPerW": 0, "panelFrame": 0, "solarStcPerKw": 0, "solarStcPrice": 0, "sigBatteryKwh": 0, "sigBatteryCost": 0, "deyeBatteryKwh": 0, "deyeBatteryCost": 0, "batteryTier1": 0, "batteryTier2": 0, "batteryTier3": 0, "batteryStcPrice": 0, "smallParts": 0, "installerSignOff": 0, "ces": 0, "labourFixed": 0, "deyeInverterCost": 0, "deyeBmsCost": 0, "sigInverterCost": 0, "sigSingleInverterCost": 0, "deyeSingleInverterCost": 0, "sigGatewayCost": 0, "sigGroundKitCost": 0, "margin": 0, "gst": 0, "solarOversizePercent": 0, "minInverters": 1,
+  "gmFramePerPanel": 0, "gmLabourPerPanel": 0, "gmMachineryFixed": 0,
+  "maxBattPerInverter": 6,
+  "deye3phInverterCost": 0,
+  "sig3ph15kwCost": 0, "sig3ph20kwCost": 0, "sig3ph30kwCost": 0,
+  "sig3phGatewayCost": 0};
+let A = {...DEFAULT_A};
+let SAVED_A = {...DEFAULT_A}; // baseline for "changed" highlighting — updates on every save
+try{
+  const saved = JSON.parse(localStorage.getItem("100upSolarCalc_v24") || "{}");
+  if(Object.keys(saved).length){
+    A = {...A, ...saved};
+    SAVED_A = {...DEFAULT_A, ...saved}; // last save becomes the baseline
+  }
+}catch(e){}
+
+const solarWPerKw = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 75.564, 294.517, 472.675, 554.064, 578.169, 548.313, 467.476, 321.697, 127.266, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 75.461, 107.045, 260.178, 560.113, 582.685, 553.308, 293.507, 143.84, 46.193, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.019, 9.124, 36.791, 535.684, 316.378, 216.311, 210.212, 108.252, 119.054, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 126.271, 23.929, 146.129, 27.527, 204.702, 115.929, 291.449, 109.898, 61.768, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.321, 291.166, 22.133, 88.295, 98.114, 172.529, 148.081, 13.185, 4.278, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 11.978, 35.843, 83.257, 112.174, 252.235, 139.873, 11.457, 89.39, 29.225, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 132.205, 338.893, 484.911, 565.2, 595.216, 565.742, 130.278, 335.672, 134.837, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 10.517, 348.39, 54.273, 580.021, 604.815, 172.679, 92.774, 344.843, 140.553, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 144.793, 351.504, 489.274, 580.379, 611.908, 579.295, 491.354, 340.081, 128.435, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.079, 13.212, 22.044, 76.7, 127.231, 306.663, 68.256, 31.269, 10.478, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 12.125, 35.279, 141.373, 57.689, 148.938, 201.036, 134.681, 75.791, 23.946, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.068, 13.178, 79.837, 29.116, 56.987, 64.764, 100.233, 69.52, 22.268, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.062, 13.963, 155.861, 85.171, 161.343, 273.353, 76.96, 42.903, 14.426, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 144.126, 345.146, 484.501, 572.38, 601.213, 571.261, 486.398, 343.522, 148.386, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 150.923, 352.817, 487.742, 570.765, 600.025, 575.854, 494.374, 355.11, 156.694, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 158.642, 366.693, 504.68, 330.753, 400.058, 257.257, 270.583, 95.151, 59.036, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 55.587, 153.743, 46.21, 170.721, 328.518, 58.311, 104.424, 7.525, 3.57, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 143.503, 7.626, 120.713, 582.549, 610.298, 584.488, 499.048, 207.845, 81.788, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.076, 13.931, 106.334, 218.46, 170.245, 229.222, 165.344, 91.78, 161.621, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 155.214, 42.612, 504.921, 595.629, 622.608, 589.041, 502.228, 356.04, 150.698, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 146.596, 350.271, 492.943, 136.712, 598.218, 561.259, 24.391, 326.708, 5.864, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 157.812, 361.704, 495.829, 573.511, 597.399, 572.245, 496.219, 358.866, 161.231, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 157.647, 355.332, 489.255, 351.354, 309.378, 579.776, 342.215, 239.089, 107.764, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 34.625, 46.647, 498.033, 212.644, 182.994, 244.232, 498.687, 68.433, 28.93, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.867, 14.715, 504.542, 583.69, 243.09, 588.188, 35.071, 200.797, 176.008, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 176.916, 15.682, 529.041, 614.215, 641.403, 209.655, 170.596, 390.122, 38.945, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 190.064, 403.298, 542.064, 628.401, 659.057, 629.6, 544.154, 404.033, 93.498, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 178.735, 382.712, 518.526, 600.117, 624.139, 592.487, 507.406, 367.017, 175.76, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 185.76, 391.639, 530.4, 611.256, 397.319, 339.648, 208.32, 290.957, 48.958, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 10.68, 16.473, 37.517, 332.548, 80.734, 107.115, 152.38, 256.216, 171.299, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 188.899, 395.875, 525.774, 605.312, 632.039, 296.349, 524.189, 243.5, 112.766, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+
+const loadBlocks = [
+  {start:0,end:4,pct:12.5},{start:4,end:8,pct:15},{start:8,end:12,pct:12.5},
+  {start:12,end:16,pct:17.5},{start:16,end:20,pct:30},{start:20,end:24,pct:17.5}
+];
+const pctSum = loadBlocks.reduce((s,b)=>s+b.pct,0);
+
+function fmt(n){return new Intl.NumberFormat('en-AU',{maximumFractionDigits:0}).format(Math.round(n));}
+function money(n){return '$'+fmt(n);}
+function money2(n){return '$'+new Intl.NumberFormat('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(n)||0);}
+function kw(n){return (Math.round(n*10)/10).toFixed(1)+'kW';}
+function kwh(n){return (Math.round(n*10)/10).toFixed(1)+'kWh';}
+
+function showCalc(id, btn){
+  document.querySelectorAll('.calc').forEach(x=>x.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+function hourlyLoadKwh(dailyKwh, hour){
+  const block = loadBlocks.find(b=>hour>=b.start && hour<b.end);
+  return dailyKwh * (block.pct/pctSum) / (block.end-block.start);
+}
+
+function simulate(panelCount, batteryKwh, dailyKwh){
+  const solarKw = panelCount * A.panelW / 1000;
+  let soc = batteryKwh, minSoc = batteryKwh, unmet = 0, spilled = 0;
+  for(let i=0;i<solarWPerKw.length;i++){
+    const hour = i % 24;
+    const production = solarKw * solarWPerKw[i] / 1000;
+    const load = hourlyLoadKwh(dailyKwh, hour);
+    soc += production - load;
+    if(soc > batteryKwh){ spilled += soc - batteryKwh; soc = batteryKwh; }
+    if(soc < 0){ unmet += -soc; soc = 0; }
+    if(soc < minSoc) minSoc = soc;
+  }
+  return {passes: unmet < 0.00001, unmet, minSoc, spilled, solarKw, mode:'accurate', modeLabel:'Accurate July hourly model'};
+}
+
+function quickEstimate(panelCount, batteryKwh, dailyKwh){
+  const solarKw = panelCount * A.panelW / 1000;
+  const julyDailyPerKw = solarWPerKw.reduce((s,x)=>s+x,0) / 1000 / 31;
+  const dailySolar = solarKw * julyDailyPerKw;
+  const nightPct = loadBlocks.filter(b=>b.start>=16 || b.end<=8).reduce((s,b)=>s+b.pct,0) / pctSum;
+  const batteryNeed = dailyKwh * nightPct;
+  const solarShortfall = Math.max(0, dailyKwh - dailySolar);
+  const batteryShortfall = Math.max(0, batteryNeed - batteryKwh);
+  const unmet = solarShortfall*31 + batteryShortfall;
+  return {
+    passes: solarShortfall <= 0.00001 && batteryShortfall <= 0.00001,
+    unmet, minSoc: Math.max(0,batteryKwh-batteryNeed), spilled: Math.max(0,(dailySolar-dailyKwh)*31), solarKw,
+    dailySolar, batteryNeed, solarShortfall, batteryShortfall, mode:'quick', modeLabel:'Quick sales estimate'
+  };
+}
+
+function evaluateSystem(panelCount, batteryKwh, dailyKwh, mode){
+  return mode === 'quick' ? quickEstimate(panelCount,batteryKwh,dailyKwh) : simulate(panelCount,batteryKwh,dailyKwh);
+}
+
+function allowedSolarPerInverterKw(){
+  return 8 * (A.solarOversizePercent / 100);
+}
+
+function inverterCount(solarKw){
+  return Math.max(1, Math.ceil(solarKw / allowedSolarPerInverterKw()));
+}
+
+function solarStcCount(solarKw){ return solarKw * A.solarStcPerKw; }
+function batteryStcCount(battKwh){
+  let stc = 0;
+  stc += Math.min(battKwh,14) * A.batteryTier1;
+  if(battKwh > 14) stc += Math.min(battKwh-14,14) * A.batteryTier2;
+  if(battKwh > 28) stc += Math.min(battKwh-28,22) * A.batteryTier3;
+  return stc;
+}
+
+// ── Core cost engine — all inverter configs share this ──
+function costForWithConfig(brand, panelCount, units, invKw, invUnitCost, minInv){
+  const solarKw = panelCount * A.panelW / 1000;
+  const isSig = brand === 'Sigenergy';
+  const maxSolarPerInv = invKw * (A.solarOversizePercent / 100);
+  const invForSolar = Math.max(minInv, Math.ceil(solarKw / maxSolarPerInv));
+  const invForBatt  = Math.ceil(units / A.maxBattPerInverter);
+  const invCount    = Math.max(invForSolar, invForBatt);
+  const panelSupplyCost = panelCount * A.panelCost;
+  const panelInstallCost = panelCount * A.panelW * A.panelInstallPerW;
+  const panelFrameCost = panelCount * A.panelFrame;
+  const panelCost = panelSupplyCost + panelInstallCost + panelFrameCost;
+  const fixed = A.smallParts + A.installerSignOff + A.ces + A.labourFixed;
+  const batteryKwh = units * (isSig ? A.sigBatteryKwh : A.deyeBatteryKwh);
+  const batteryCost = units * (isSig ? A.sigBatteryCost : A.deyeBatteryCost);
+  const gatewayCount = isSig ? Math.ceil(invCount / 3) : 0;
+  const groundKitCost = isSig ? invCount * A.sigGroundKitCost : 0;
+  const deyeBmsCost = !isSig ? invCount * A.deyeBmsCost : 0;
+  const inverterCost = invCount * invUnitCost + gatewayCount * A.sigGatewayCost + groundKitCost + deyeBmsCost;
+  const costBeforeMargin = panelCost + fixed + batteryCost + inverterCost;
+  const marginDollar = costBeforeMargin * A.margin;
+  const basePlusMargin = costBeforeMargin + marginDollar;
+  const gstDollar = basePlusMargin * A.gst;
+  const afterMarginGst = basePlusMargin + gstDollar;
+  const solarStcs = solarStcCount(solarKw);
+  const batteryStcs = batteryStcCount(batteryKwh);
+  const solarRebateValue = solarStcs * A.solarStcPrice;
+  const batteryRebateValue = batteryStcs * A.batteryStcPrice;
+  const rebate = solarRebateValue + batteryRebateValue;
+  const finalPrice = Math.max(0, afterMarginGst - rebate);
+  return {brand,panelCount,solarKw,units,batteryKwh,invCount,invKw,gatewayCount,groundKitCost,deyeBmsCost,
+    panelSupplyCost,panelInstallCost,panelFrameCost,panelCost,fixed,
+    batteryCost,inverterCost,costBeforeMargin,marginDollar,basePlusMargin,
+    gstDollar,afterMarginGst,rebate,finalPrice,solarStcs,batteryStcs,solarRebateValue,batteryRebateValue};
+}
+// 8kW dual config
+function costFor(brand, panelCount, units){
+  const isSig = brand === 'Sigenergy';
+  return costForWithConfig(brand, panelCount, units, 8,
+    isSig ? A.sigInverterCost : A.deyeInverterCost, 1);
+}
+// 12kW (Sig) / 10kW (Deye) large inverter config
+function costForLarge(brand, panelCount, units){
+  const isSig = brand === 'Sigenergy';
+  const largeKw = isSig ? 12 : 10;
+  return costForWithConfig(brand, panelCount, units, largeKw,
+    isSig ? A.sigSingleInverterCost : A.deyeSingleInverterCost, 1);
+}
+// Force dual 8kW — minimum 2 inverters regardless of solar kW
+function costForDual8(brand, panelCount, units){
+  return costForWithConfig(brand, panelCount, units, 8,
+    brand === 'Sigenergy' ? A.sigInverterCost : A.deyeInverterCost, 2);
+}
+function costForGroundDual8(brand, roofPanels, gmPanels, units){
+  return costForGroundWithConfig(brand, roofPanels, gmPanels, units, 8,
+    brand === 'Sigenergy' ? A.sigInverterCost : A.deyeInverterCost, 2);
+}
+function costForAuto(brand, panelCount, units){
+  const std   = costFor(brand, panelCount, units);
+  const large = costForLarge(brand, panelCount, units);
+  if(large.invCount < std.invCount) return large;
+  if(std.invCount < large.invCount) return std;
+  return std.finalPrice <= large.finalPrice ? std : large;
+}
+function costForGroundAuto(brand, roofPanels, gmPanels, units){
+  const isSig = brand === 'Sigenergy';
+  const largeKw = isSig ? 12 : 10;
+  const std   = costForGround(brand, roofPanels, gmPanels, units);
+  const large = costForGroundWithConfig(brand, roofPanels, gmPanels, units,
+    largeKw, isSig ? A.sigSingleInverterCost : A.deyeSingleInverterCost, 1);
+  if(large.invCount < std.invCount) return large;
+  if(std.invCount < large.invCount) return std;
+  return std.finalPrice <= large.finalPrice ? std : large;
+}
+
+// ── 3-Phase cost engine ──
+function costFor3phWithConfig(brand, panelCount, units, invKw, invUnitCost){
+  const solarKw = panelCount * A.panelW / 1000;
+  const isSig = brand === 'Sigenergy';
+  const maxSolarPerInv = invKw * (A.solarOversizePercent / 100);
+  const invForSolar = Math.ceil(solarKw / maxSolarPerInv);
+  const invForBatt  = Math.ceil(units / A.maxBattPerInverter);
+  const invCount    = Math.max(1, Math.max(invForSolar, invForBatt));
+  const panelSupplyCost = panelCount * A.panelCost;
+  const panelInstallCost = panelCount * A.panelW * A.panelInstallPerW;
+  const panelFrameCost = panelCount * A.panelFrame;
+  const panelCost = panelSupplyCost + panelInstallCost + panelFrameCost;
+  const fixed = A.smallParts + A.installerSignOff + A.ces + A.labourFixed;
+  const batteryKwh = units * (isSig ? A.sigBatteryKwh : A.deyeBatteryKwh);
+  const batteryCost = units * (isSig ? A.sigBatteryCost : A.deyeBatteryCost);
+  const gatewayCount = isSig ? Math.ceil(invCount / 3) : 0;
+  const groundKitCost = isSig ? invCount * A.sigGroundKitCost : 0;
+  const deyeBmsCost = !isSig ? invCount * A.deyeBmsCost : 0;
+  const inverterCost = invCount * invUnitCost + gatewayCount * A.sig3phGatewayCost + groundKitCost + deyeBmsCost;
+  const costBeforeMargin = panelCost + fixed + batteryCost + inverterCost;
+  const marginDollar = costBeforeMargin * A.margin;
+  const basePlusMargin = costBeforeMargin + marginDollar;
+  const gstDollar = basePlusMargin * A.gst;
+  const afterMarginGst = basePlusMargin + gstDollar;
+  const solarStcs = solarStcCount(solarKw);
+  const batteryStcs = batteryStcCount(batteryKwh);
+  const solarRebateValue = solarStcs * A.solarStcPrice;
+  const batteryRebateValue = batteryStcs * A.batteryStcPrice;
+  const rebate = solarRebateValue + batteryRebateValue;
+  const finalPrice = Math.max(0, afterMarginGst - rebate);
+  return {brand, panelCount, solarKw, units, batteryKwh, invCount, invKw, gatewayCount, groundKitCost, deyeBmsCost,
+    panelSupplyCost, panelInstallCost, panelFrameCost, panelCost, fixed,
+    batteryCost, inverterCost, costBeforeMargin, marginDollar, basePlusMargin,
+    gstDollar, afterMarginGst, rebate, finalPrice, solarStcs, batteryStcs,
+    solarRebateValue, batteryRebateValue, is3ph: true};
+}
+// Sigenergy 3-phase: try 15/20/30kW, pick fewest inverters (tie → lowest price)
+function costForSig3phBest(panelCount, units){
+  const configs = [
+    {kw:15, cost:A.sig3ph15kwCost},
+    {kw:20, cost:A.sig3ph20kwCost},
+    {kw:30, cost:A.sig3ph30kwCost},
+  ];
+  let best = null;
+  for(const cfg of configs){
+    const r = costFor3phWithConfig('Sigenergy', panelCount, units, cfg.kw, cfg.cost);
+    if(!best || r.invCount < best.invCount || (r.invCount === best.invCount && r.finalPrice < best.finalPrice))
+      best = r;
+  }
+  return best;
+}
+// Deye 3-phase: 12kW only
+function costForDeye3ph(panelCount, units){
+  return costFor3phWithConfig('Deye', panelCount, units, 12, A.deye3phInverterCost);
+}
+// Auto-sizing for 3-phase
+function findMinUnits3ph(brand, panelCount, dailyLoad, startUnits, maxUnits){
+  const isSig = brand === 'Sigenergy';
+  const inc = isSig ? A.sigBatteryKwh : A.deyeBatteryKwh;
+  const costFn = isSig ? costForSig3phBest : costForDeye3ph;
+  for(let u = startUnits; u <= maxUnits; u++){
+    const sim = simulate(panelCount, u * inc, dailyLoad);
+    if(sim.passes) return {...costFn(panelCount, u), ...sim, dailyLoad};
+  }
+  const sim = simulate(panelCount, maxUnits * inc, dailyLoad);
+  return {...costFn(panelCount, maxUnits), ...sim, failed:true, dailyLoad};
+}
+// UI helpers
+let _3phT;
+function schedule3ph(){ clearTimeout(_3phT); _3phT = setTimeout(runMain3ph, 350); }
+function three3phModeChange(){
+  const auto = document.getElementById('three3phBattMode').value === 'auto';
+  document.getElementById('three3phAutoFields').style.display   = auto ? '' : 'none';
+  document.getElementById('three3phManualFields').style.display = auto ? 'none' : '';
+  schedule3ph();
+}
+function runMain3ph(){
+  const daily  = Number(document.getElementById('three3phLoad').value);
+  const isAuto = document.getElementById('three3phBattMode').value === 'auto';
+  const start  = Math.max(1, Math.floor(Number(document.getElementById('three3phStartUnits').value)||1));
+  const max    = Math.max(start, Math.floor(Number(document.getElementById('three3phMaxUnits').value)||40));
+  const sigMU  = Math.max(1, Math.floor(Number(document.getElementById('three3phSigUnits').value)||1));
+  const deyeMU = Math.max(1, Math.floor(Number(document.getElementById('three3phDeyeUnits').value)||1));
+  const panels = Math.max(1, Math.floor(Number(document.getElementById('three3phPanels').value)||1));
+  let sig, deye;
+  if(isAuto){
+    sig  = findMinUnits3ph('Sigenergy', panels, daily, start, max);
+    deye = findMinUnits3ph('Deye',      panels, daily, start, max);
+  } else {
+    sig  = {...costForSig3phBest(panels, sigMU), modeLabel:'Manual — no July test', dailyLoad:daily};
+    deye = {...costForDeye3ph(panels, deyeMU),   modeLabel:'Manual — no July test', dailyLoad:daily};
+  }
+  document.getElementById('three3phKpis').innerHTML = kpiStrip([
+    ['Solar',    kw(sig.solarKw)],
+    ['Daily',    kwh(daily)],
+    ['Sig',      sig.failed  ? 'No pass' : money(sig.finalPrice)],
+    ['Deye',     deye.failed ? 'No pass' : money(deye.finalPrice)],
+    ['Sig inv',  sig.invCount+'×'+sig.invKw+'kW 3Φ'],
+    ['Deye inv', deye.invCount+'×'+deye.invKw+'kW 3Φ'],
+  ]);
+  document.getElementById('three3phResults').innerHTML = resultCard(sig)+resultCard(deye);
+  document.getElementById('three3phQuotes').innerHTML  = combinedQuoteCard(sig,deye,'three3phCombinedQuote');
+}
+
+
+function findMinUnits(brand, panelCount, dailyLoad, startUnits, maxUnits, mode){
+  return findMinUnitsWithFn(brand, panelCount, dailyLoad, startUnits, maxUnits, mode, costForAuto);
+}
+function findMinUnitsWithFn(brand, panelCount, dailyLoad, startUnits, maxUnits, mode, costFn){
+  const isSig = brand === 'Sigenergy';
+  const inc = isSig ? A.sigBatteryKwh : A.deyeBatteryKwh;
+  if(mode === 'quick'){
+    const fixedUnits = Math.max(1, Math.floor(startUnits));
+    const sim = evaluateSystem(panelCount, fixedUnits*inc, dailyLoad, mode);
+    return {...costFn(brand,panelCount,fixedUnits),...sim, failed:!sim.passes, dailyLoad};
+  }
+  for(let u=startUnits; u<=maxUnits; u++){
+    const sim = evaluateSystem(panelCount, u*inc, dailyLoad, mode);
+    if(sim.passes) return {...costFn(brand,panelCount,u),...sim, dailyLoad};
+  }
+  const sim = evaluateSystem(panelCount, maxUnits*inc, dailyLoad, mode);
+  return {...costFn(brand,panelCount,maxUnits),...sim, failed:true, dailyLoad};
+}
+
+// ── Manufacturer part / model names ──
+// Battery module model — Sigenergy derives from configured usable kWh; Deye LV is a single module.
+function partBattery(brand){
+  if(brand !== 'Sigenergy') return 'Deye AI-W5.1-B';
+  const k = A.sigBatteryKwh || 8.1;
+  if(k < 5.5) return 'SigenStor BAT 5.0';
+  if(k < 7)   return 'SigenStor BAT 6.0';
+  if(k < 8.4) return 'SigenStor BAT 8.0';
+  return 'SigenStor BAT 10.0';
+}
+// Inverter / energy-controller model from brand + size + phase.
+function partInverter(r){
+  const kw = r.invKw || 8;
+  if(r.brand === 'Sigenergy')
+    return r.is3ph ? `SigenStor EC ${kw}.0 TP` : `SigenStor EC ${kw}.0 SP`;
+  // Deye AI-W5.1-B-ESS all-in-one: P1 = single phase, P3 = three phase. AU variant.
+  return `Deye AI-W5.1-${kw}${r.is3ph ? 'P3' : 'P1'}-AU-B`;
+}
+// Sigen Gateway model by phase.
+function partSigGateway(is3ph){
+  return is3ph ? 'Sigen Gateway (Three Phase)' : 'Sigen Gateway (Single Phase)';
+}
+
+function inverterDescription(r){
+  return r.invCount+' × '+partInverter(r);
+}
+
+function costTableRows(r){
+  const rows = [];
+  // Solar
+  rows.push(`<div class="cost-row section-header"><span class="cost-label">Solar panels</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Supply (${r.panelCount} × ${money(A.panelCost)})</span><span class="cost-val">${money(r.panelSupplyCost||0)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Install (${r.panelCount} × ${money2(A.panelW*A.panelInstallPerW)})</span><span class="cost-val">${money(r.panelInstallCost||0)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Frame (${r.panelCount} × ${money(A.panelFrame)})</span><span class="cost-val">${money(r.panelFrameCost||0)}</span></div>`);
+  rows.push(`<div class="cost-row bold-row"><span class="cost-label">Total panels</span><span class="cost-val">${money(r.panelCost)}</span></div>`);
+  // Other costs
+  rows.push(`<div class="cost-row section-header"><span class="cost-label">Other costs</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">${partBattery(r.brand)} battery (${r.units} units)</span><span class="cost-val">${money(r.batteryCost)}</span></div>`);
+  const invKwDisplay = r.invKw || 8;
+  const phTag = r.is3ph ? ' 3Φ' : '';
+  const invLineLabel = r.brand === 'Sigenergy'
+    ? `${r.invCount} × ${partInverter(r)} (${invKwDisplay}kW${phTag}) + ${r.gatewayCount} × ${partSigGateway(r.is3ph)} (1 per ≤3 inv.)`
+    : `${r.invCount} × ${partInverter(r)} (${invKwDisplay}kW${phTag})`;
+  rows.push(`<div class="cost-row"><span class="cost-label">${invLineLabel}</span><span class="cost-val">${money(r.inverterCost)}</span></div>`);
+  if(r.brand === 'Sigenergy' && r.groundKitCost > 0)
+    rows.push(`<div class="cost-row"><span class="cost-label">SigenStor mounting kit (${r.invCount} × ${money(A.sigGroundKitCost)})</span><span class="cost-val">${money(r.groundKitCost)}</span></div>`);
+  if(r.brand === 'Deye' && r.deyeBmsCost > 0)
+    rows.push(`<div class="cost-row"><span class="cost-label">Deye AI-W5.1-PDU3 + Base (${r.invCount} × ${money(A.deyeBmsCost)})</span><span class="cost-val">${money(r.deyeBmsCost)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Small parts</span><span class="cost-val">${money(A.smallParts)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Installer sign off</span><span class="cost-val">${money(A.installerSignOff)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">CES</span><span class="cost-val">${money(A.ces)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Fixed labour</span><span class="cost-val">${money(A.labourFixed)}</span></div>`);
+  // Pricing
+  rows.push(`<div class="cost-row section-header"><span class="cost-label">Pricing</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Base cost</span><span class="cost-val">${money(r.costBeforeMargin)}</span></div>`);
+  rows.push(`<div class="cost-row margin-row"><span class="cost-label">Margin (${(A.margin*100).toFixed(0)}%)</span><span class="cost-val">${money(r.marginDollar)}</span></div>`);
+  rows.push(`<div class="cost-row bold-row"><span class="cost-label">Sales cost before GST</span><span class="cost-val">${money(r.basePlusMargin)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">GST (${(A.gst*100).toFixed(0)}%)</span><span class="cost-val">${money(r.gstDollar)}</span></div>`);
+  rows.push(`<div class="cost-row bold-row"><span class="cost-label">Before rebates</span><span class="cost-val">${money(r.afterMarginGst)}</span></div>`);
+  // Rebates
+  rows.push(`<div class="cost-row section-header"><span class="cost-label">Rebates</span></div>`);
+  rows.push(`<div class="cost-row rebate"><span class="cost-label">Solar (${(r.solarStcs||0).toFixed(1)} STCs)</span><span class="cost-val">–${money(r.solarRebateValue||0)}</span></div>`);
+  rows.push(`<div class="cost-row rebate"><span class="cost-label">Battery (${(r.batteryStcs||0).toFixed(1)} STCs)</span><span class="cost-val">–${money(r.batteryRebateValue||0)}</span></div>`);
+  return rows.join('');
+}
+
+function battCapWarning(r){
+  return '';
+}
+
+function shortageBlock(r){
+  if(!r.failed || !r.unmet) return '';
+  const totalLoad = (r.dailyLoad || 20) * 31;
+  const pct = Math.min(100, (r.unmet / totalLoad * 100)).toFixed(1);
+  return `<div class="alert alert-warn" style="margin:8px 18px 0;font-size:11px;line-height:1.6">
+    <span class="alert-title">⚡ ${pct}% power shortage in July worst-case (Ballarat VIC)</span>
+    This system is short <strong>${kwh(r.unmet)}</strong> over the July simulation period (${pct}% of total load).
+    The shortfall will need to be covered by a <strong>generator</strong>.
+  </div>`;
+}
+
+function resultCard(r){
+  const cls = r.brand === 'Sigenergy' ? 'sig' : 'deye';
+  const simRow = r.modeLabel ? `<div class="cost-row"><span class="cost-label">Model</span><span class="cost-val">${r.modeLabel}</span></div>
+  <div class="cost-row"><span class="cost-label">July result</span><span class="cost-val">${r.failed ? '✗ Generator needed' : '✓ Passes'}</span></div>` : '';
+  return `<div class="result-card ${cls}">
+    <div class="result-head">
+      <div class="result-brand">${r.brand} ${r.invKw}kW${r.is3ph?' 3Φ':''} system${r.failed?' <span style="font-size:11px;color:var(--accent)">· generator required</span>':''}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">${r.panelCount} panels · ${kw(r.solarKw)} · ${kwh(r.batteryKwh)} · ${inverterDescription(r)} · ${r.units} batt</div>
+      <div class="result-price">${money(r.finalPrice)}</div>
+    </div>
+    ${shortageBlock(r)}
+    ${battCapWarning(r)}
+    <div class="cost-table">
+      ${costTableRows(r)}
+      ${simRow}
+      <div class="cost-row total"><span class="cost-label">Final customer price</span><span class="cost-val" style="font-size:15px;color:var(--accent)">${money(r.finalPrice)}</span></div>
+    </div>
+  </div>`;
+}
+
+function systemOptionText(r, optionLabel){
+  const ikw = r.invKw || 8;
+  const phLabel = r.is3ph ? ' 3-phase' : '';
+  const inverterLine = r.brand === 'Sigenergy'
+    ? `${r.invCount} x ${partInverter(r)} (${ikw}kW${phLabel}) + ${r.gatewayCount} x ${partSigGateway(r.is3ph)}`
+    : `${r.invCount} x ${partInverter(r)} (${ikw}kW${phLabel})`;
+
+  const mountLine = r.groundMount && r.gmPanels > 0 && r.roofPanels > 0
+    ? `- Mounting: ${r.roofPanels} panels on roof (standard frame) + ${r.gmPanels} panels on ground mount frame`
+    : r.groundMount && r.gmPanels > 0
+    ? `- Mounting: ${r.gmPanels} panels on ground mount frame`
+    : `- Mounting: ${r.panelCount} panels on roof (standard frame)`;
+
+  const isDual = r.invCount >= 2 && ikw === 8;
+  const dualNote = isDual
+    ? `- ⚡ Dual inverter system: This system uses ${r.invCount} x ${ikw}kW inverters wired in parallel, providing full redundancy — if one inverter requires service, the other continues to power the home.`
+    : '';
+
+  const brandName = r.brand === 'Sigenergy' ? 'Sigenergy Off Grid Solar System' : 'Deye Off Grid Solar System';
+  return `${optionLabel} - ${brandName}
+- Inverter${(r.invCount||1)>1?'s':''}: ${inverterLine}
+- Battery: ${r.units} x ${partBattery(r.brand)} battery module${r.units>1?'s':''}, ${kwh(r.batteryKwh)} usable storage
+- Solar: ${r.panelCount} x ${A.panelW}W solar panels, ${kw(r.solarKw)} total array
+${mountLine}${dualNote ? '\n'+dualNote : ''}
+- Price: ${money(r.finalPrice)} fully installed after solar and battery rebates
+- Includes: installation and certification`;
+}
+
+function combinedQuoteText(optionOne, optionTwo){
+  return `${systemOptionText(optionOne, 'Option 1')}
+
+${systemOptionText(optionTwo, 'Option 2')}
+
+Both options include installation and certification. Both systems come with a 10 year manufacturer warranty on inverter and battery.
+
+More information:
+Sigenergy: https://www.sigenergy.com/au/products/sigenstor
+Deye: https://deye.com/product/ai-w5-1-b-ess/`;
+}
+
+function combinedQuoteCard(optionOne, optionTwo, id){
+  const txt = combinedQuoteText(optionOne, optionTwo).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+  const gmTagOne = optionOne.groundMount && optionOne.gmPanels > 0 ? ` · <span style="color:var(--accent)">🏗 ${optionOne.gmPanels} ground</span>` : '';
+  const gmTagTwo = optionTwo.groundMount && optionTwo.gmPanels > 0 ? ` · <span style="color:var(--accent)">🏗 ${optionTwo.gmPanels} ground</span>` : '';
+  return `<div class="quote-card">
+    <div class="quote-head">
+      <div class="quote-head-title">Combined quote block</div>
+      <span style="font-family:var(--mono);font-size:13px;color:var(--accent)">from ${money(Math.min(optionOne.finalPrice, optionTwo.finalPrice))}</span>
+    </div>
+    <div class="quote-summary">
+      <div class="quote-opt"><span class="sig-tag">Option 1 · Sigenergy</span> &nbsp;<strong>${kw(optionOne.solarKw)} solar · ${kwh(optionOne.batteryKwh)} battery · ${money(optionOne.finalPrice)}</strong>${gmTagOne}</div>
+      <div class="quote-opt"><span class="deye-tag">Option 2 · Deye</span> &nbsp;<strong>${kw(optionTwo.solarKw)} solar · ${kwh(optionTwo.batteryKwh)} battery · ${money(optionTwo.finalPrice)}</strong>${gmTagTwo}</div>
+    </div>
+    <div class="quote-body">
+      <textarea class="quote-textarea" id="${id}">${txt}</textarea>
+      <div class="quote-actions">
+        <button class="btn btn-secondary btn-sm" onclick="copyQuote('${id}')">⎘ Copy quote block</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function copyQuote(id){
+  const el=document.getElementById(id); el.select(); document.execCommand('copy');
+}
+
+function kpiStrip(items){
+  return items.map(([label,val])=>`<div class="kpi"><div class="kpi-label">${label}</div><div class="kpi-value">${val}</div></div>`).join('');
+}
+
+// ── Debounce helpers ──
+let _mainT, _optT;
+function scheduleMain(){ clearTimeout(_mainT); _mainT = setTimeout(runMain, 350); }
+function scheduleOpt(){  clearTimeout(_optT);  _optT  = setTimeout(runOptimiser, 500); }
+
+// ── Main Calculator UI helpers ──
+function mainModeChange(){
+  const auto = document.getElementById('mainBattMode').value === 'auto';
+  document.getElementById('mainAutoFields').style.display   = auto ? '' : 'none';
+  document.getElementById('mainManualFields').style.display = auto ? 'none' : '';
+  scheduleMain();
+}
+function mainGroundChange(){
+  const gm = document.getElementById('mainGroundCheck').checked;
+  document.getElementById('mainRoofOnlyFields').style.display = gm ? 'none' : '';
+  document.getElementById('mainGroundFields').style.display   = gm ? '' : 'none';
+  scheduleMain();
+}
+function updateMainTotal(){
+  const roof = Math.max(0, Number(document.getElementById('mainRoofPanels').value)||0);
+  const gm   = Math.max(0, Number(document.getElementById('mainGmPanels').value)||0);
+  const el = document.getElementById('mainTotalPanels');
+  if(el) el.value = roof + gm;
+}
+function toggleOptAdvanced(btn){
+  const el = document.getElementById('optAdvanced');
+  const open = el.style.display === '';
+  el.style.display = open ? 'none' : '';
+  document.getElementById('optAdvIcon').textContent = open ? '▸' : '▾';
+}
+
+// ── Ground-aware findMinUnits ──
+function findMinUnitsGround(brand, roofPanels, gmPanels, dailyLoad, startUnits, maxUnits){
+  return findMinUnitsGroundWithFn(brand, roofPanels, gmPanels, dailyLoad, startUnits, maxUnits, costForGroundAuto);
+}
+function findMinUnitsGroundWithFn(brand, roofPanels, gmPanels, dailyLoad, startUnits, maxUnits, costFn){
+  const isSig = brand === 'Sigenergy';
+  const inc = isSig ? A.sigBatteryKwh : A.deyeBatteryKwh;
+  const totalPanels = roofPanels + gmPanels;
+  for(let u = startUnits; u <= maxUnits; u++){
+    const sim = simulate(totalPanels, u * inc, dailyLoad);
+    if(sim.passes) return {...costFn(brand, roofPanels, gmPanels, u), ...sim, dailyLoad};
+  }
+  const sim = simulate(totalPanels, maxUnits * inc, dailyLoad);
+  return {...costFn(brand, roofPanels, gmPanels, maxUnits), ...sim, failed:true, dailyLoad};
+}
+
+// ── Main Calculator ──
+function runMain(){
+  const daily      = Number(document.getElementById('mainLoad').value);
+  const isGm       = document.getElementById('mainGroundCheck').checked;
+  const isAuto     = document.getElementById('mainBattMode').value === 'auto';
+  const invConfig  = document.getElementById('mainInvConfig').value; // 'auto' | 'dual8'
+  const isDual8    = invConfig === 'dual8';
+  const start   = Math.max(1, Math.floor(Number(document.getElementById('mainStartUnits').value)||1));
+  const max     = Math.max(start, Math.floor(Number(document.getElementById('mainMaxUnits').value)||40));
+  const sigMU   = Math.max(0, Math.floor(Number(document.getElementById('mainSigUnits').value)||1));
+  const deyeMU  = Math.max(0, Math.floor(Number(document.getElementById('mainDeyeUnits').value)||1));
+
+  const costFn      = isDual8 ? costForDual8      : costForAuto;
+  const costGmFn    = isDual8 ? costForGroundDual8 : costForGroundAuto;
+
+  let sig, deye;
+  if(isGm){
+    const roofP = Math.max(0, Math.floor(Number(document.getElementById('mainRoofPanels').value)||0));
+    const gmP   = Math.max(0, Math.floor(Number(document.getElementById('mainGmPanels').value)||0));
+    updateMainTotal();
+    if(isAuto){
+      sig  = findMinUnitsGroundWithFn('Sigenergy', roofP, gmP, daily, start, max, costGmFn);
+      deye = findMinUnitsGroundWithFn('Deye',      roofP, gmP, daily, start, max, costGmFn);
+    } else {
+      sig  = costGmFn('Sigenergy', roofP, gmP, sigMU);
+      deye = costGmFn('Deye',      roofP, gmP, deyeMU);
+    }
+  } else {
+    const panels = Math.max(1, Math.floor(Number(document.getElementById('mainPanels').value)||1));
+    if(isAuto){
+      sig  = findMinUnitsWithFn('Sigenergy', panels, daily, start, max, 'accurate', costFn);
+      deye = findMinUnitsWithFn('Deye',      panels, daily, start, max, 'accurate', costFn);
+    } else {
+      sig  = {...costFn('Sigenergy', panels, sigMU),  modeLabel:'Manual — no July test', dailyLoad:daily};
+      deye = {...costFn('Deye',      panels, deyeMU), modeLabel:'Manual — no July test', dailyLoad:daily};
+    }
+  }
+
+  const cheapest = (!sig.failed && !deye.failed)
+    ? (sig.finalPrice <= deye.finalPrice ? sig : deye)
+    : (!sig.failed ? sig : deye);
+
+  document.getElementById('mainKpis').innerHTML = kpiStrip([
+    ['Solar',   kw(sig.solarKw)],
+    ['Daily',   kwh(daily)],
+    ['Sig',     sig.failed  ? 'No pass' : money(sig.finalPrice)],
+    ['Deye',    deye.failed ? 'No pass' : money(deye.finalPrice)],
+    ['Sig inv', sig.invCount+'×'+sig.invKw+'kW'],
+    ['Deye inv',deye.invCount+'×'+deye.invKw+'kW'],
+  ]);
+  const cardFn = isGm ? resultCardGround : resultCard;
+  document.getElementById('mainResults').innerHTML = cardFn(sig)+cardFn(deye);
+  document.getElementById('mainQuotes').innerHTML  = combinedQuoteCard(sig,deye,'mainCombinedQuote');
+}
+
+// ── Value Optimiser ──
+function runOptimiser(){
+  const daily    = Number(document.getElementById('optLoad').value);
+  const minP     = Math.max(1,  Math.floor(Number(document.getElementById('minPanels').value)));
+  const maxP     = Math.max(minP, Math.floor(Number(document.getElementById('maxPanels').value)));
+  const step     = Math.max(1,  Math.floor(Number(document.getElementById('panelStep').value)));
+  const maxUnits = Math.max(1,  Math.floor(Number(document.getElementById('optMaxUnits').value)));
+  let all = [];
+  for(const brand of ['Sigenergy','Deye']){
+    const inc = brand==='Sigenergy' ? A.sigBatteryKwh : A.deyeBatteryKwh;
+    for(let p=minP; p<=maxP; p+=step){
+      for(let u=1; u<=maxUnits; u++){
+        const sim = simulate(p, u*inc, daily);
+        if(sim.passes){ all.push({...costForAuto(brand,p,u),...sim}); break; }
+      }
+    }
+  }
+  all.sort((a,b)=>a.finalPrice-b.finalPrice);
+  const bestSig  = all.find(x=>x.brand==='Sigenergy');
+  const bestDeye = all.find(x=>x.brand==='Deye');
+  document.getElementById('optKpis').innerHTML = kpiStrip([
+    ['Best overall',  all[0] ? all[0].brand : '—'],
+    ['Lowest price',  all[0] ? money(all[0].finalPrice) : '—'],
+    ['Options tested',all.length],
+    ['Daily load',    kwh(daily)],
+  ]);
+  document.getElementById('optResults').innerHTML = (bestSig?resultCard(bestSig):'')+(bestDeye?resultCard(bestDeye):'');
+  document.getElementById('optQuotes').innerHTML  = (bestSig&&bestDeye) ? combinedQuoteCard(bestSig,bestDeye,'optCombinedQuote') : '';
+}
+
+// ── Ground Mount Optimiser ──
+let gmOptTimer = null;
+function scheduleGmOpt(){ clearTimeout(gmOptTimer); gmOptTimer = setTimeout(runGmOptimiser, 300); }
+
+function toggleGmOptAdvanced(btn){
+  const el = document.getElementById('gmoptAdvanced');
+  const icon = document.getElementById('gmoptAdvIcon');
+  const open = el.style.display === 'none';
+  el.style.display = open ? 'block' : 'none';
+  icon.textContent = open ? '▾' : '▸';
+}
+
+function runGmOptimiser(){
+  const daily      = Number(document.getElementById('gmoptLoad').value);
+  const minRoof    = Math.max(0, Math.floor(Number(document.getElementById('gmoptMinRoof').value)));
+  const maxRoof    = Math.max(minRoof, Math.floor(Number(document.getElementById('gmoptMaxRoof').value)));
+  const minGm      = Math.max(0, Math.floor(Number(document.getElementById('gmoptMinGm').value)));
+  const maxGm      = Math.max(minGm, Math.floor(Number(document.getElementById('gmoptMaxGm').value)));
+  const step       = Math.max(1, Math.floor(Number(document.getElementById('gmoptStep').value) || 1));
+  const maxUnits   = Math.max(1, Math.floor(Number(document.getElementById('gmoptMaxUnits').value) || 40));
+  const minTotal   = Math.max(0, Math.floor(Number(document.getElementById('gmoptMinTotal').value) || 0));
+
+  let bestSig = null, bestDeye = null;
+  let combos = 0;
+
+  for(const brand of ['Sigenergy','Deye']){
+    const inc = brand === 'Sigenergy' ? A.sigBatteryKwh : A.deyeBatteryKwh;
+    let bestForBrand = null;
+
+    for(let r = minRoof; r <= maxRoof; r += step){
+      for(let g = minGm; g <= maxGm; g += step){
+        const total = r + g;
+        if(total < minTotal) continue;
+        if(total === 0) continue;
+        combos++;
+        for(let u = 1; u <= maxUnits; u++){
+          const sim = simulate(total, u * inc, daily);
+          if(sim.passes){
+            const c = costForGroundAuto(brand, r, g, u);
+            if(!bestForBrand || c.finalPrice < bestForBrand.finalPrice){
+              bestForBrand = {...c, ...sim, dailyLoad: daily};
+            }
+            break;
+          }
+        }
+      }
+    }
+    if(brand === 'Sigenergy') bestSig = bestForBrand;
+    else bestDeye = bestForBrand;
+  }
+
+  document.getElementById('gmoptKpis').innerHTML = kpiStrip([
+    ['Best overall',   bestSig && bestDeye ? (bestSig.finalPrice <= bestDeye.finalPrice ? 'Sigenergy' : 'Deye') : '—'],
+    ['Lowest Sig',     bestSig  ? money(bestSig.finalPrice)  : '—'],
+    ['Lowest Deye',    bestDeye ? money(bestDeye.finalPrice) : '—'],
+    ['Combos tested',  combos],
+    ['Daily load',     kwh(daily)],
+  ]);
+  document.getElementById('gmoptResults').innerHTML =
+    (bestSig  ? resultCardGround(bestSig)  : '<div class="alert alert-warn">No Sigenergy solution found — try expanding the search range.</div>') +
+    (bestDeye ? resultCardGround(bestDeye) : '<div class="alert alert-warn">No Deye solution found — try expanding the search range.</div>');
+  document.getElementById('gmoptQuotes').innerHTML =
+    (bestSig && bestDeye) ? combinedQuoteCard(bestSig, bestDeye, 'gmoptCombinedQuote') : '';
+}
+
+// assumptionFields defined below
+function costForGroundWithConfig(brand, roofPanels, gmPanels, units, invKw, invUnitCost, minInv){
+  const totalPanels = roofPanels + gmPanels;
+  const solarKw = totalPanels * A.panelW / 1000;
+  const isSig = brand === 'Sigenergy';
+  const maxSolarPerInv = invKw * (A.solarOversizePercent / 100);
+  const invForSolar = Math.max(minInv, Math.ceil(solarKw / maxSolarPerInv));
+  const invForBatt  = Math.ceil(units / A.maxBattPerInverter);
+  const invCount    = Math.max(invForSolar, invForBatt);
+
+  const panelSupplyCost = totalPanels * A.panelCost;
+  const panelInstallCost = totalPanels * A.panelW * A.panelInstallPerW;
+  const roofFrameCost = roofPanels * A.panelFrame;
+  const gmFrameCost = gmPanels * A.gmFramePerPanel;
+  const panelFrameCost = roofFrameCost;
+  const panelCost = panelSupplyCost + panelInstallCost + roofFrameCost;
+  const fixed = A.smallParts + A.installerSignOff + A.ces + A.labourFixed;
+  const batteryKwh = units * (isSig ? A.sigBatteryKwh : A.deyeBatteryKwh);
+  const batteryCost = units * (isSig ? A.sigBatteryCost : A.deyeBatteryCost);
+  const gatewayCount = isSig ? Math.ceil(invCount / 3) : 0;
+  const groundKitCost = isSig ? invCount * A.sigGroundKitCost : 0;
+  const deyeBmsCost = !isSig ? invCount * A.deyeBmsCost : 0;
+  const inverterCost = invCount * invUnitCost + gatewayCount * A.sigGatewayCost + groundKitCost + deyeBmsCost;
+  const gmLabourCost = gmPanels * A.gmLabourPerPanel;
+  const gmMachineryCost = gmPanels > 0 ? A.gmMachineryFixed : 0;
+  const gmExtra = gmFrameCost + gmLabourCost + gmMachineryCost;
+  const costBeforeMargin = panelCost + fixed + batteryCost + inverterCost + gmExtra;
+  const marginDollar = costBeforeMargin * A.margin;
+  const basePlusMargin = costBeforeMargin + marginDollar;
+  const gstDollar = basePlusMargin * A.gst;
+  const afterMarginGst = basePlusMargin + gstDollar;
+  const solarStcs = solarStcCount(solarKw);
+  const batteryStcs = batteryStcCount(batteryKwh);
+  const solarRebateValue = solarStcs * A.solarStcPrice;
+  const batteryRebateValue = batteryStcs * A.batteryStcPrice;
+  const rebate = solarRebateValue + batteryRebateValue;
+  const finalPrice = Math.max(0, afterMarginGst - rebate);
+  return {brand, roofPanels, gmPanels, panelCount:totalPanels, solarKw, units, batteryKwh,
+    invCount, invKw, gatewayCount, groundKitCost, deyeBmsCost, panelSupplyCost, panelInstallCost, roofFrameCost, gmFrameCost,
+    panelFrameCost, panelCost, fixed, batteryCost, inverterCost, gmLabourCost, gmMachineryCost,
+    gmExtra, costBeforeMargin, marginDollar, basePlusMargin, gstDollar, afterMarginGst,
+    solarStcs, batteryStcs, solarRebateValue, batteryRebateValue, rebate, finalPrice,
+    groundMount: true};
+}
+function costForGround(brand, roofPanels, gmPanels, units){
+  const isSig = brand === 'Sigenergy';
+  return costForGroundWithConfig(brand, roofPanels, gmPanels, units, 8,
+    isSig ? A.sigInverterCost : A.deyeInverterCost, 1);
+}
+
+function costTableRowsGround(r){
+  const rows = [];
+  // Solar panels
+  rows.push(`<div class="cost-row section-header"><span class="cost-label">Solar panels (${r.panelCount} total)</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Supply (${r.panelCount} × ${money(A.panelCost)})</span><span class="cost-val">${money(r.panelSupplyCost)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Install (${r.panelCount} × ${money2(A.panelW*A.panelInstallPerW)})</span><span class="cost-val">${money(r.panelInstallCost)}</span></div>`);
+  if(r.roofPanels > 0)
+    rows.push(`<div class="cost-row"><span class="cost-label">Roof frame (${r.roofPanels} × ${money(A.panelFrame)})</span><span class="cost-val">${money(r.roofFrameCost)}</span></div>`);
+  rows.push(`<div class="cost-row bold-row"><span class="cost-label">Total panel cost</span><span class="cost-val">${money(r.panelCost)}</span></div>`);
+
+  // Other standard costs
+  rows.push(`<div class="cost-row section-header"><span class="cost-label">Other costs</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">${partBattery(r.brand)} battery (${r.units} units)</span><span class="cost-val">${money(r.batteryCost)}</span></div>`);
+  const invLineLabel = r.brand === 'Sigenergy'
+    ? `${r.invCount} × ${partInverter(r)} (${r.invKw}kW) + ${r.gatewayCount} × ${partSigGateway(r.is3ph)} (1 per ≤3 inv.)`
+    : `${r.invCount} × ${partInverter(r)} (${r.invKw}kW)`;
+  rows.push(`<div class="cost-row"><span class="cost-label">${invLineLabel}</span><span class="cost-val">${money(r.inverterCost)}</span></div>`);
+  if(r.brand === 'Sigenergy' && r.groundKitCost > 0)
+    rows.push(`<div class="cost-row"><span class="cost-label">SigenStor mounting kit (${r.invCount} × ${money(A.sigGroundKitCost)})</span><span class="cost-val">${money(r.groundKitCost)}</span></div>`);
+  if(r.brand === 'Deye' && r.deyeBmsCost > 0)
+    rows.push(`<div class="cost-row"><span class="cost-label">Deye AI-W5.1-PDU3 + Base (${r.invCount} × ${money(A.deyeBmsCost)})</span><span class="cost-val">${money(r.deyeBmsCost)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Small parts</span><span class="cost-val">${money(A.smallParts)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Installer sign off</span><span class="cost-val">${money(A.installerSignOff)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">CES</span><span class="cost-val">${money(A.ces)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Fixed labour</span><span class="cost-val">${money(A.labourFixed)}</span></div>`);
+
+  // Ground mount extras
+  rows.push(`<div class="cost-row section-header"><span class="cost-label" style="color:var(--accent)">Ground mount extras (${r.gmPanels} panels)</span></div>`);
+  if(r.gmPanels > 0){
+    rows.push(`<div class="cost-row"><span class="cost-label">GM frame (${r.gmPanels} × ${money(A.gmFramePerPanel)})</span><span class="cost-val">${money(r.gmFrameCost)}</span></div>`);
+    rows.push(`<div class="cost-row"><span class="cost-label">GM labour (${r.gmPanels} × ${money(A.gmLabourPerPanel)})</span><span class="cost-val">${money(r.gmLabourCost)}</span></div>`);
+    rows.push(`<div class="cost-row"><span class="cost-label">Machinery (fixed)</span><span class="cost-val">${money(r.gmMachineryCost)}</span></div>`);
+    rows.push(`<div class="cost-row bold-row" style="border-top:1px solid rgba(240,180,41,.3)"><span class="cost-label">Total GM extras</span><span class="cost-val">${money(r.gmExtra)}</span></div>`);
+  } else {
+    rows.push(`<div class="cost-row"><span class="cost-label" style="color:var(--muted)">No ground mount panels — no GM extras</span><span class="cost-val">${money(0)}</span></div>`);
+  }
+
+  // Pricing
+  rows.push(`<div class="cost-row section-header"><span class="cost-label">Pricing</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">Base cost</span><span class="cost-val">${money(r.costBeforeMargin)}</span></div>`);
+  rows.push(`<div class="cost-row margin-row"><span class="cost-label">Margin (${(A.margin*100).toFixed(0)}%)</span><span class="cost-val">${money(r.marginDollar)}</span></div>`);
+  rows.push(`<div class="cost-row bold-row"><span class="cost-label">Sales cost before GST</span><span class="cost-val">${money(r.basePlusMargin)}</span></div>`);
+  rows.push(`<div class="cost-row"><span class="cost-label">GST (${(A.gst*100).toFixed(0)}%)</span><span class="cost-val">${money(r.gstDollar)}</span></div>`);
+  rows.push(`<div class="cost-row bold-row"><span class="cost-label">Before rebates</span><span class="cost-val">${money(r.afterMarginGst)}</span></div>`);
+
+  // Rebates
+  rows.push(`<div class="cost-row section-header"><span class="cost-label">Rebates</span></div>`);
+  rows.push(`<div class="cost-row rebate"><span class="cost-label">Solar (${(r.solarStcs||0).toFixed(1)} STCs)</span><span class="cost-val">–${money(r.solarRebateValue||0)}</span></div>`);
+  rows.push(`<div class="cost-row rebate"><span class="cost-label">Battery (${(r.batteryStcs||0).toFixed(1)} STCs)</span><span class="cost-val">–${money(r.batteryRebateValue||0)}</span></div>`);
+  return rows.join('');
+}
+
+function resultCardGround(r){
+  const cls = r.brand === 'Sigenergy' ? 'sig' : 'deye';
+  const mountLabel = r.roofPanels > 0 && r.gmPanels > 0
+    ? `${r.roofPanels} roof + ${r.gmPanels} ground`
+    : r.gmPanels > 0 ? `${r.gmPanels} ground only` : `${r.roofPanels} roof only`;
+  const maxBatt = r.invCount * A.maxBattPerInverter;
+  const battRatio = `${r.units}/${maxBatt} batt`;
+  return `<div class="result-card ${cls}">
+    <div class="result-head">
+      <div class="result-brand">${r.brand} mixed mount${r.failed?' <span style="font-size:11px;color:var(--accent)">· generator required</span>':''}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">${mountLabel} · ${kw(r.solarKw)} · ${kwh(r.batteryKwh)} · ${inverterDescription(r)} · ${battRatio}</div>
+      <div class="result-price">${money(r.finalPrice)}</div>
+    </div>
+    ${shortageBlock(r)}
+    ${battCapWarning(r)}
+    <div class="cost-table">
+      ${costTableRowsGround(r)}
+      <div class="cost-row total"><span class="cost-label">Final customer price</span><span class="cost-val" style="font-size:15px;color:var(--accent)">${money(r.finalPrice)}</span></div>
+    </div>
+  </div>`;
+}
+
+// assumptionFields: [key, label, unit, usedByTabs, description]
+// key=null → section header (label = section title)
+const ALL_DUAL = ['main','opt','qe'];
+const ALL_TABS  = ['main','opt','qe'];
+const assumptionFields = [
+  // ─── SOLAR PANELS ───
+  [null, '☀️ Solar Panels'],
+  ['panelW',               'Panel size',                    'W',                          ALL_TABS,  'Watt rating of each panel; drives kW totals and install cost'],
+  ['panelCost',            'Panel supply cost',             '$ / panel',                  ALL_TABS,  'Equipment cost per panel, ex-install'],
+  ['panelInstallPerW',     'Panel installation',            '$ / W',                      ALL_TABS,  'Labour rate for roof install — multiplied by panel W × count'],
+  ['panelFrame',           'Roof mounting frame',           '$ / panel',                  ALL_TABS,  'Standard roof racking cost per panel'],
+  // ─── SOLAR REBATE ───
+  [null, '🏷️ Solar Rebate (STCs)'],
+  ['solarStcPerKw',        'Solar rebate STCs',             'STC / kW',                   ALL_TABS,  'Small-scale technology certificates issued per kW of solar'],
+  ['solarStcPrice',        'Solar STC price',               '$ / STC',                    ALL_TABS,  'Market price per STC — sets the dollar value of the solar rebate'],
+  // ─── SIGENERGY ───
+  [null, '🟢 Sigenergy Battery'],
+  ['sigBatteryKwh',        'Sig battery size · BAT 8.0',    'kWh usable',                 ALL_TABS,  'Usable capacity of one Sigenergy battery module (SigenStor BAT 8.0)'],
+  ['sigBatteryCost',       'Sig battery cost · BAT 8.0',    '$ / unit',                   ALL_TABS,  'Equipment cost per Sigenergy battery module (SigenStor BAT 8.0)'],
+  // ─── DEYE ───
+  [null, '🔵 Deye Battery'],
+  ['deyeBatteryKwh',       'Deye battery · AI-W5.1-B',      'kWh usable',                 ALL_TABS,  'Usable capacity of one Deye battery module (AI-W5.1-B, 5.12 kWh LV)'],
+  ['deyeBatteryCost',      'Deye batt cost · AI-W5.1-B',    '$ / unit',                   ALL_TABS,  'Equipment cost per Deye battery module (AI-W5.1-B)'],
+  // ─── BATTERY REBATE ───
+  [null, '🏷️ Battery Rebate Tiers (STCs / kWh)'],
+  ['batteryTier1',         'Tier 1 rate',                   'STC/kWh · first 14 kWh',    ALL_TABS,  'Highest tier — applies to first 14 kWh of storage'],
+  ['batteryTier2',         'Tier 2 rate',                   'STC/kWh · 14–28 kWh',       ALL_TABS,  'Mid tier — applies to the 14–28 kWh band'],
+  ['batteryTier3',         'Tier 3 rate',                   'STC/kWh · 28–50 kWh',       ALL_TABS,  'Low tier — applies to 28–50 kWh; zero beyond 50 kWh'],
+  ['batteryStcPrice',      'Battery STC price',             '$ / STC',                    ALL_TABS,  'Market price per STC applied to battery certificates'],
+  // ─── FIXED SITE COSTS ───
+  [null, '🔧 Fixed Site Costs'],
+  ['smallParts',           'Small parts',                   '$',                          ALL_TABS,  'Cables, conduit, fixings and misc consumables per job'],
+  ['installerSignOff',     'Installer sign off',            '$',                          ALL_TABS,  'CEC-accredited installer inspection and signoff fee'],
+  ['ces',                  'CES',                           '$',                          ALL_TABS,  'Certificate of Electrical Safety lodgement fee'],
+  ['labourFixed',          'Fixed labour per site',         '$',                          ALL_TABS,  'Flat labour rate regardless of system size'],
+  // ─── SIGENERGY INVERTERS ───
+  [null, '🟢 Sigenergy Inverters'],
+  ['sigInverterCost',      'Sig 8kW · EC 8.0 SP',           '$',                          ALL_TABS,  'Cost of one Sigenergy 8kW energy controller (SigenStor EC 8.0 SP — gateway billed separately)'],
+  ['sigSingleInverterCost','Sig 12kW · EC 12.0 SP',         '$',                          ALL_TABS,  'Cost of one Sigenergy 12kW single energy controller (SigenStor EC 12.0 SP)'],
+  ['sigGatewayCost',       'Sig gateway · Sigen Gateway',   '$',                          ALL_TABS,  'Sigen Gateway (single phase) — one required per ≤3 Sigenergy inverters'],
+  ['sigGroundKitCost',     'Sig mount · SigenStor kit',     '$ / inverter',               ALL_TABS,  'SigenStor mounting kit to install the energy controller — always required per inverter'],
+  // ─── DEYE INVERTERS ───
+  [null, '🔵 Deye Inverters'],
+  ['deyeInverterCost',     'Deye 8kW · AI-W5.1-8P1',        '$',                          ALL_TABS,  'Cost of one Deye 8kW single-phase all-in-one inverter (AI-W5.1-8P1-AU-B — PDU/Base billed separately)'],
+  ['deyeSingleInverterCost','Deye 10kW · AI-W5.1-10P3',     '$',                          ALL_TABS,  'Cost of one Deye 10kW all-in-one inverter (AI-W5.1-10P3-AU-B; note: 10kW exists only as three-phase — PDU/Base billed separately)'],
+  ['deyeBmsCost',          'Deye PDU3 + Base · AI-W5.1',    '$ / inverter',               ALL_TABS,  'AI-W5.1-PDU3 Power Distribution Unit + AI-W5.1-Base — one stack base per Deye inverter'],
+  // ─── SIZING RULES ───
+  [null, '📐 Sizing Rules'],
+  ['solarOversizePercent', 'Solar allowed per inverter',    '% — 200 = 2× inverter kW',   ALL_TABS,  'How much DC solar can be connected per inverter kW (oversizing ratio)'],
+  ['maxBattPerInverter',   'Max batteries per inverter',    'count',                      ALL_TABS,  'Hard limit on batteries per inverter — drives inverter count up if batteries exceed this'],
+  // ─── PRICING ───
+  [null, '💰 Pricing'],
+  ['margin',               'Margin',                        'decimal — 0.30 = 30%',       ALL_TABS,  'Applied to total cost before GST and rebates'],
+  ['gst',                  'GST',                           'decimal — 0.10 = 10%',       ALL_TABS,  'Applied after margin is added'],
+  // ─── GROUND MOUNT ───
+  [null, '🏗️ Ground Mount Extras'],
+  ['gmFramePerPanel',      'Ground mount frame',            '$ / panel',                  ['main'],  'Steel frame and fixings cost per ground-mounted panel'],
+  ['gmLabourPerPanel',     'Ground mount labour',           '$ / panel',                  ['main'],  'Additional install labour per ground-mounted panel'],
+  ['gmMachineryFixed',     'Machinery (fixed)',             '$',                          ['main'],  'One-off cost for machinery/equipment to install ground mount'],
+  // ─── 3-PHASE INVERTERS ───
+  [null, '🔌 3-Phase Inverters'],
+  ['deye3phInverterCost',  'Deye 12kW 3Φ · AI-W5.1-12P3',  '$',                          ['three'], 'Cost of one Deye 12kW three-phase all-in-one inverter (AI-W5.1-12P3-AU-B)'],
+  ['sig3ph15kwCost',       'Sig 15kW 3Φ · EC 15.0 TP',      '$',                          ['three'], 'Cost of one Sigenergy 15kW 3-phase energy controller (SigenStor EC 15.0 TP)'],
+  ['sig3ph20kwCost',       'Sig 20kW 3Φ · EC 20.0 TP',      '$',                          ['three'], 'Cost of one Sigenergy 20kW 3-phase energy controller (SigenStor EC 20.0 TP)'],
+  ['sig3ph30kwCost',       'Sig 30kW 3Φ · EC 30.0 TP',      '$',                          ['three'], 'Cost of one Sigenergy 30kW 3-phase energy controller (SigenStor EC 30.0 TP)'],
+  ['sig3phGatewayCost',    'Sig 3Φ gateway · Sigen Gateway','$',                          ['three'], 'Sigen Gateway (three phase) — one per ≤3 Sigenergy 3-phase inverters'],
+];
+
+const TAB_META = {
+  main:   {cls:'tt-fixed',  icon:'📐', label:'Calculator'},
+  three:  {cls:'tt-single', icon:'🔌', label:'3 Phase'},
+  opt:    {cls:'tt-opt',    icon:'⚡', label:'Optimiser'},
+  qe:     {cls:'tt-qe',     icon:'🏠', label:'Quick Est.'},
+};
+function tabBadges(tabs){
+  return '<div class="tab-tags">'+tabs.map(t=>{
+    const m=TAB_META[t];
+    return `<span class="tab-tag ${m.cls}">${m.icon} ${m.label}</span>`;
+  }).join('')+'</div>';
+}
+
+function assumptions(){
+  const rows = assumptionFields.map(([key,label,unit,tabs,desc])=>{
+    // Section header
+    if(key === null){
+      return `<tr class="ass-section-row"><td colspan="4"><div class="ass-section-label">${label}</div></td></tr>`;
+    }
+    const changed = SAVED_A[key] !== undefined && A[key] !== SAVED_A[key];
+    const changedCls = changed ? ' changed' : '';
+    const defaultNote = changed ? ` <span style="color:var(--muted);font-size:10px;font-family:var(--mono)">(saved: ${SAVED_A[key]})</span>` : '';
+    return `<tr>
+      <td class="ass-label">
+        ${label}${defaultNote}
+        ${desc ? `<div class="ass-desc">${desc}</div>` : ''}
+      </td>
+      <td><input class="ass-input${changedCls}" id="ass_${key}" type="number" step="0.01" value="${A[key]}"
+        oninput="assInputChanged('${key}', this)"></td>
+      <td class="ass-unit">${unit}</td>
+      <td class="used-col">${tabBadges(tabs||[])}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('assumptionsTable').innerHTML = `<table class="ass-table"><thead><tr><th>Assumption</th><th>Value</th><th>Unit / note</th><th>Used by</th></tr></thead><tbody>${rows}</tbody></table>`;
+  updateAssChangesBadge();
+  updateAssPreview();
+}
+
+function assInputChanged(key, input){
+  const val = Number(input.value);
+  const isChanged = Number.isFinite(val) && SAVED_A[key] !== undefined && val !== SAVED_A[key];
+  input.classList.toggle('changed', isChanged);
+  updateAssChangesBadge();
+  updateAssPreview();
+}
+
+function countAssChanges(){
+  let n = 0;
+  for(const [key] of assumptionFields){
+    if(!key) continue;
+    const el = document.getElementById('ass_'+key);
+    if(!el) continue;
+    const val = Number(el.value);
+    if(Number.isFinite(val) && SAVED_A[key] !== undefined && val !== SAVED_A[key]) n++;
+  }
+  return n;
+}
+
+function updateAssChangesBadge(){
+  const n = countAssChanges();
+  const badge = document.getElementById('assChangesBadge');
+  if(!badge) return;
+  badge.style.display = n > 0 ? 'inline-block' : 'none';
+  badge.textContent = n + ' change' + (n !== 1 ? 's' : '') + ' from defaults';
+}
+
+function readAssFromInputs(){
+  // Read inputs into a temp object without mutating A — used for live preview
+  const tmp = {...A};
+  for(const [key] of assumptionFields){
+    if(!key) continue;
+    const el = document.getElementById('ass_'+key);
+    if(!el) continue;
+    const val = Number(el.value);
+    if(Number.isFinite(val)) tmp[key] = val;
+  }
+  return tmp;
+}
+
+function updateAssPreview(){
+  const saved = A;
+  A = readAssFromInputs();
+  const sigR  = costForAuto('Sigenergy', 30, 3);
+  const deyeR = costForAuto('Deye',      30, 5);
+  A = saved;
+  document.getElementById('prevSigPrice').textContent   = money(sigR.finalPrice);
+  document.getElementById('prevDeyePrice').textContent  = money(deyeR.finalPrice);
+  document.getElementById('prevSolarRebate').textContent = money(sigR.solarRebateValue);
+  document.getElementById('prevBattRebate').textContent  = money(sigR.batteryRebateValue);
+  document.getElementById('prevMarginPct').textContent   = (readAssFromInputs().margin*100).toFixed(0)+'%';
+}
+
+function readAssumptionInputs(){
+  for(const [key,,] of assumptionFields){
+    if(!key) continue;
+    const el = document.getElementById('ass_'+key);
+    if(!el) continue;
+    const val = Number(el.value);
+    if(!Number.isFinite(val)){ alert('Please check '+key); return false; }
+    A[key] = val;
+  }
+  A.solarOversizePercent = Math.max(100, A.solarOversizePercent);
+  return true;
+}
+
+function applyAssumptions(){
+  if(!readAssumptionInputs()) return;
+  SAVED_A = {...A}; // last save is now the new baseline
+  // Also update DEFAULT_A so reset goes back to last saved, not factory
+  Object.assign(DEFAULT_A, A);
+  localStorage.setItem('100upSolarCalc_v24', JSON.stringify(A));
+  assumptions(); runMain(); runMain3ph(); runOptimiser(); runGmOptimiser();
+  // Rerun QE if a selection is active
+  if(typeof qeSelectedOcc === 'number' && qeSelectedOcc !== null){
+    const bedIdx = [...document.querySelectorAll('[id^="bed_btn_"]')].findIndex(b=>b.classList.contains('active'));
+    const bedrooms = bedIdx >= 0 ? QE_BEDROOM_CONFIGS[bedIdx].bedrooms : qeSelectedOcc - 1;
+    runQeForPersons(qeSelectedOcc, bedrooms);
+  }
+  const confirm = document.getElementById('saveConfirm');
+  confirm.style.display = 'flex';
+  clearTimeout(confirm._t);
+  confirm._t = setTimeout(()=>{ confirm.style.display='none'; }, 2500);
+}
+
+function resetAssumptions(){
+  A = {...DEFAULT_A};
+  SAVED_A = {...DEFAULT_A};
+  localStorage.removeItem('100upSolarCalc_v24');
+  assumptions(); runMain(); runMain3ph(); runOptimiser(); runGmOptimiser();
+  if(typeof qeSelectedOcc === 'number' && qeSelectedOcc !== null){
+    const bedIdx = [...document.querySelectorAll('[id^="bed_btn_"]')].findIndex(b=>b.classList.contains('active'));
+    const bedrooms = bedIdx >= 0 ? QE_BEDROOM_CONFIGS[bedIdx].bedrooms : qeSelectedOcc - 1;
+    runQeForPersons(qeSelectedOcc, bedrooms);
+  }
+}
+
+function exportAssumptions(){
+  const data = JSON.stringify(A, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = '100UP_assumptions_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importAssumptions(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const imported = JSON.parse(e.target.result);
+      // Merge into A — only known keys
+      Object.keys(DEFAULT_A).forEach(k=>{ if(imported[k] !== undefined) A[k] = imported[k]; });
+      SAVED_A = {...A};
+      Object.assign(DEFAULT_A, A);
+      localStorage.setItem('100upSolarCalc_v24', JSON.stringify(A));
+      assumptions(); runMain(); runMain3ph(); runOptimiser(); runGmOptimiser();
+      const confirm = document.getElementById('saveConfirm');
+      confirm.style.display = 'flex';
+      clearTimeout(confirm._t);
+      confirm._t = setTimeout(()=>{ confirm.style.display='none'; }, 2500);
+    } catch(err){
+      alert('Could not read assumptions file. Make sure it is a valid 100UP JSON export.');
+    }
+    input.value = ''; // reset so same file can be re-imported
+  };
+  reader.readAsText(file);
+}
+
+assumptions(); runMain(); runMain3ph(); runOptimiser(); runGmOptimiser();
+
+// ─── QUICK ESTIMATE ───
+const QE_OCCUPANT_CONFIGS = [
+  {count:1, icon:'🧍', label:'1 person'},
+  {count:2, icon:'👥', label:'2 people'},
+  {count:3, icon:'👨‍👩‍👦', label:'3 people'},
+  {count:4, icon:'👨‍👩‍👧‍👦', label:'4 people'},
+  {count:5, icon:'🏘️', label:'5 people'},
+  {count:6, icon:'🏡', label:'6 people'},
+  {count:7, icon:'🏰', label:'7 people'},
+  {count:8, icon:'🏢', label:'8 people'},
+  {count:9, icon:'🏗️', label:'9+ people'},
+];
+
+const QE_BEDROOM_CONFIGS = [
+  {bedrooms:0, icon:'🏠', label:'Studio'},
+  {bedrooms:1, icon:'🛏️', label:'1 bed'},
+  {bedrooms:2, icon:'🛏️', label:'2 bed'},
+  {bedrooms:3, icon:'🛏️', label:'3 bed'},
+  {bedrooms:4, icon:'🛏️', label:'4 bed'},
+  {bedrooms:5, icon:'🛏️', label:'5 bed'},
+  {bedrooms:6, icon:'🛏️', label:'6 bed'},
+  {bedrooms:7, icon:'🛏️', label:'7 bed'},
+  {bedrooms:8, icon:'🛏️', label:'8+ bed'},
+];
+
+function qeLoad(occupants){
+  return 5 + 5 * occupants;
+}
+
+function qeOptimiserSearch(dailyLoad){
+  const panelMin = 12, panelMax = 120, maxUnits = 40;
+  let bestSig = null, bestDeye = null;
+  for(const brand of ['Sigenergy','Deye']){
+    const inc = brand==='Sigenergy' ? A.sigBatteryKwh : A.deyeBatteryKwh;
+    let bestForBrand = null;
+    for(let p=panelMin; p<=panelMax; p++){
+      for(let u=1; u<=maxUnits; u++){
+        const sim = simulate(p, u*inc, dailyLoad);
+        if(sim.passes){
+          const c = costForAuto(brand, p, u);
+          if(!bestForBrand || c.finalPrice < bestForBrand.finalPrice){
+            bestForBrand = {...c, ...sim};
+          }
+          break;
+        }
+      }
+    }
+    if(brand==='Sigenergy') bestSig = bestForBrand;
+    else bestDeye = bestForBrand;
+  }
+  return {bestSig, bestDeye};
+}
+
+function buildQeOccupantPicker(){
+  const picker = document.getElementById('occPicker');
+  if(!picker) return;
+  picker.innerHTML = QE_OCCUPANT_CONFIGS.map((cfg,i)=>
+    `<button class="occ-btn" id="occ_btn_${i}" onclick="qeSelectOccupants(${cfg.count},${i})">
+      <div class="occ-check">✓</div>
+      <div class="occ-icon">${cfg.icon}</div>
+      <div class="occ-label">${cfg.label}</div>
+    </button>`
+  ).join('');
+}
+
+function buildQeBedroomPicker(){
+  const picker = document.getElementById('bedroomPicker');
+  if(!picker) return;
+  picker.innerHTML = QE_BEDROOM_CONFIGS.map((cfg,i)=>
+    `<button class="occ-btn" id="bed_btn_${i}" onclick="qeSelectBedrooms(${cfg.bedrooms},${i})">
+      <div class="occ-check">✓</div>
+      <div class="occ-icon">${cfg.icon}</div>
+      <div class="occ-label">${cfg.label}</div>
+    </button>`
+  ).join('');
+}
+
+let qeSelectedOcc = null;
+let qeGenPctValue = 25; // percent
+let qeLastResult  = null; // stores args for copy-to-clipboard
+
+function qeGenPctChange(val){
+  qeGenPctValue = Number(val);
+  document.getElementById('qeGenPctVal').textContent = val+'%';
+  if(qeSelectedOcc !== null){
+    const bedIdx = [...document.querySelectorAll('[id^="bed_btn_"]')].findIndex(b=>b.classList.contains('active'));
+    const bedrooms = bedIdx >= 0 ? QE_BEDROOM_CONFIGS[bedIdx].bedrooms : qeSelectedOcc - 1;
+    runQeForPersons(qeSelectedOcc, bedrooms);
+  }
+}
+
+function qeRerun(){
+  if(qeSelectedOcc !== null){
+    const bedIdx = [...document.querySelectorAll('[id^="bed_btn_"]')].findIndex(b=>b.classList.contains('active'));
+    const bedrooms = bedIdx >= 0 ? QE_BEDROOM_CONFIGS[bedIdx].bedrooms : qeSelectedOcc - 1;
+    runQeForPersons(qeSelectedOcc, bedrooms);
+  }
+}
+
+// Shared logic — called by both selectors
+function runQeForPersons(persons, bedrooms){
+  qeSelectedOcc = persons;
+  const daily = qeLoad(persons);
+  const genKwh = Math.round(daily * (qeGenPctValue / 100) * 10) / 10;
+  const solarDaily = Math.round((daily - genKwh) * 10) / 10;
+  const summaryEl = document.getElementById('qeLoadSummary');
+  summaryEl.style.display = 'flex';
+  document.getElementById('qeLoadVal').textContent = daily.toFixed(1)+' kWh/day';
+  const bedLabel = bedrooms === 0 ? 'Studio' : bedrooms+' '+(bedrooms===1?'bedroom':'bedrooms');
+  document.getElementById('qeLoadEq').textContent = bedLabel+' · '+persons+' '+(persons===1?'person':'people');
+  document.getElementById('qeLoadBreakdown').innerHTML =
+    '<strong style="color:var(--ink)">'+bedLabel+'</strong> → '+persons+' '+(persons===1?'person':'people')+'<br>'
+    +'5 kWh base + '+persons+' &times; 5 kWh/person<br>'
+    +'= <strong style="color:var(--ink)">'+daily+' kWh/day</strong> total';
+
+  const resultEl = document.getElementById('qeResult');
+  resultEl.innerHTML = '<div class="qe-no-result" style="color:var(--muted)">&#x23F3; Calculating&hellip;</div>';
+  setTimeout(()=>{
+    const full = qeOptimiserSearch(daily);
+    if(qeGenPctValue === 0){
+      renderQeResult(full.bestSig, full.bestDeye, null, null, daily, daily, 0, persons, bedrooms);
+    } else {
+      const gen = qeOptimiserSearch(solarDaily);
+      renderQeResult(full.bestSig, full.bestDeye, gen.bestSig, gen.bestDeye, daily, solarDaily, genKwh, persons, bedrooms);
+    }
+  }, 30);
+}
+
+function qeSelectOccupants(count, btnIdx){
+  // Sync person buttons
+  document.querySelectorAll('[id^="occ_btn_"]').forEach((b,i)=>b.classList.toggle('active',i===btnIdx));
+  // Sync bedroom buttons: bedrooms = persons - 1, capped at last config
+  const bedIdx = Math.min(count-1, QE_BEDROOM_CONFIGS.length-1);
+  document.querySelectorAll('[id^="bed_btn_"]').forEach((b,i)=>b.classList.toggle('active',i===bedIdx));
+  runQeForPersons(count, count-1);
+}
+
+function qeSelectBedrooms(bedrooms, btnIdx){
+  // Sync bedroom buttons
+  document.querySelectorAll('[id^="bed_btn_"]').forEach((b,i)=>b.classList.toggle('active',i===btnIdx));
+  // persons = bedrooms + 1, capped at last person config
+  const persons = bedrooms+1;
+  const occIdx = Math.min(persons-1, QE_OCCUPANT_CONFIGS.length-1);
+  document.querySelectorAll('[id^="occ_btn_"]').forEach((b,i)=>b.classList.toggle('active',i===occIdx));
+  runQeForPersons(persons, bedrooms);
+}
+
+function renderQeResult(sigFull, deyeFull, sigGen, deyeGen, daily, solarDaily, genKwh, occupants, bedrooms){
+  const resultEl = document.getElementById('qeResult');
+  const disclaimerEl = document.getElementById('qeDisclaimer');
+
+  if(!sigFull && !deyeFull && !sigGen && !deyeGen){
+    resultEl.innerHTML = '<div class="qe-no-result">No passing system found within search range. Try the detailed calculators.</div>';
+    disclaimerEl.style.display = 'none';
+    return;
+  }
+
+  function panelHtml(sig, deye, load, label, isGen){
+    if(!sig && !deye) return `<div class="qe-result-panel"><div class="qe-no-result">No result</div></div>`;
+    const ref = sig || deye;
+    const minP = deye ? deye.finalPrice : sig.finalPrice;
+    const maxP = sig ? sig.finalPrice : deye.finalPrice;
+    const rangePct = maxP > 0 ? Math.round((minP/maxP)*100) : 50;
+    const panels = (sig&&deye)
+      ? (sig.panelCount===deye.panelCount ? sig.panelCount+' panels' : deye.panelCount+'–'+sig.panelCount+' panels')
+      : ref.panelCount+' panels';
+    const solar = (sig&&deye)
+      ? (Math.abs(sig.solarKw-deye.solarKw)<0.15 ? kw(ref.solarKw) : kw(Math.min(sig.solarKw,deye.solarKw))+'–'+kw(Math.max(sig.solarKw,deye.solarKw)))
+      : kw(ref.solarKw);
+    const batt = (sig&&deye)
+      ? (Math.abs(sig.batteryKwh-deye.batteryKwh)<0.5 ? kwh(ref.batteryKwh) : kwh(Math.min(sig.batteryKwh,deye.batteryKwh))+'–'+kwh(Math.max(sig.batteryKwh,deye.batteryKwh)))
+      : kwh(ref.batteryKwh);
+
+    // Savings badge (only for gen panel, compare against full panel prices)
+    let saveBadge = '';
+    if(isGen && sigFull && sig){
+      const saveSig = sigFull.finalPrice - sig.finalPrice;
+      if(saveSig > 0) saveBadge = `<span class="qe-save-badge">Save up to ${money(saveSig)}</span>`;
+    }
+    if(isGen && !saveBadge && deyeFull && deye){
+      const saveDeye = deyeFull.finalPrice - deye.finalPrice;
+      if(saveDeye > 0) saveBadge = `<span class="qe-save-badge">Save up to ${money(saveDeye)}</span>`;
+    }
+
+    const headBg = isGen
+      ? 'background:linear-gradient(90deg,rgba(240,180,41,.07),transparent)'
+      : 'background:linear-gradient(90deg,rgba(0,196,140,.05),transparent)';
+    const modeNote = isGen
+      ? `${solarDaily} kWh/day solar+battery · ${genKwh} kWh/day generator (${qeGenPctValue}%)`
+      : `${daily} kWh/day · fully off-grid`;
+
+    return `<div class="qe-result-panel">
+      <div class="qe-compare-label ${isGen?'with-gen':'no-gen'}">
+        ${isGen ? `⛽ With generator (${qeGenPctValue}%) — generator not included` : '☀️ Without generator'}
+        ${saveBadge}
+      </div>
+      <div class="qe-result-head" style="${headBg}">
+        <div>
+          <div class="qe-result-label" style="color:${isGen?'var(--accent)':'var(--sig)'}">${bedrooms===0?'Studio':bedrooms+' bed'} · ${occupants} ${occupants===1?'person':'people'}</div>
+          <div class="qe-result-mode">${modeNote}</div>
+        </div>
+      </div>
+      <div class="qe-specs" style="grid-template-columns:1fr 1fr">
+        <div class="qe-spec">
+          <div class="qe-spec-label">Solar array</div>
+          <div class="qe-spec-val">${solar}</div>
+          <div class="qe-spec-unit">${panels} · ${A.panelW}W each</div>
+        </div>
+        <div class="qe-spec">
+          <div class="qe-spec-label">Battery storage</div>
+          <div class="qe-spec-val">${batt}</div>
+          <div class="qe-spec-unit">Usable capacity</div>
+        </div>
+      </div>
+      <div class="qe-price-bar">
+        ${deye ? `<div class="qe-price-cell deye-cell">
+          <div class="qe-price-brand">Deye — budget</div>
+          <div class="qe-price-amount">${money(deye.finalPrice)}</div>
+          <div class="qe-price-note">${deye.panelCount} panels · ${kw(deye.solarKw)} · ${kwh(deye.batteryKwh)} · ${deye.invCount}× ${deye.invKw}kW</div>
+        </div>` : ''}
+        ${sig ? `<div class="qe-price-cell sig-cell">
+          <div class="qe-price-brand">Sigenergy — premium</div>
+          <div class="qe-price-amount">${money(sig.finalPrice)}</div>
+          <div class="qe-price-note">${sig.panelCount} panels · ${kw(sig.solarKw)} · ${kwh(sig.batteryKwh)} · ${sig.invCount}× ${sig.invKw}kW + ${sig.gatewayCount} × Sigen Gateway</div>
+        </div>` : ''}
+      </div>
+      ${(sig&&deye) ? `<div class="qe-range-bar">
+        <div class="qe-range-label">Price range</div>
+        <div style="flex:1;min-width:80px">
+          <div class="qe-range-track"><div class="qe-range-fill" style="width:${rangePct}%"></div></div>
+          <div class="qe-range-vals"><span class="qe-range-min">${money(minP)} Deye</span><span class="qe-range-max">${money(maxP)} Sig</span></div>
+        </div>
+      </div>` : ''}
+    </div>`;
+  }
+
+  resultEl.innerHTML = `<div class="qe-compare">
+    ${panelHtml(sigFull, deyeFull, daily, 'no-gen', false)}
+    ${panelHtml(sigGen,  deyeGen,  solarDaily, 'with-gen', true)}
+  </div>`;
+
+  disclaimerEl.style.display = 'block';
+
+  // Store for copy function
+  qeLastResult = {sigFull, deyeFull, sigGen, deyeGen, daily, solarDaily, genKwh, occupants, bedrooms};
+
+  // Inject / refresh copy button
+  let copyBtn = document.getElementById('qeCopyBtn');
+  if(!copyBtn){
+    copyBtn = document.createElement('button');
+    copyBtn.id = 'qeCopyBtn';
+    copyBtn.className = 'btn btn-secondary';
+    copyBtn.style.cssText = 'margin-top:14px;gap:8px;';
+    copyBtn.onclick = qeCopyPrompt;
+    disclaimerEl.after(copyBtn);
+  }
+  copyBtn.innerHTML = '📋 Copy customer quote text';
+}
+
+function qeCopyPrompt(){
+  if(!qeLastResult) return;
+  const {sigFull, deyeFull, sigGen, deyeGen, daily, solarDaily, genKwh, occupants, bedrooms} = qeLastResult;
+  const bedLabel = bedrooms === 0 ? 'Studio' : bedrooms + (bedrooms===1?' bedroom':' bedrooms');
+
+  let t = `Hi,\n\nHere's a quick solar + battery system estimate for your ${bedLabel} (${occupants} ${occupants===1?'person':'people'}, approx. ${daily} kWh/day).\n\n`;
+
+  t += `☀️  OPTION 1 — Fully off-grid (no generator needed)\n`;
+  if(deyeFull) t += `    Deye (budget)       ${money(deyeFull.finalPrice).padEnd(10)}  ${deyeFull.panelCount} panels · ${kw(deyeFull.solarKw)} solar · ${kwh(deyeFull.batteryKwh)} battery\n`;
+  if(sigFull)  t += `    Sigenergy (premium) ${money(sigFull.finalPrice).padEnd(10)}  ${sigFull.panelCount} panels · ${kw(sigFull.solarKw)} solar · ${kwh(sigFull.batteryKwh)} battery\n`;
+
+  if(genKwh > 0 && (sigGen || deyeGen)){
+    t += `\n⛽  OPTION 2 — Smaller system + generator (generator covers ${qeGenPctValue}% of daily load — generator not included in price)\n`;
+    if(deyeGen) t += `    Deye (budget)       ${money(deyeGen.finalPrice).padEnd(10)}  ${deyeGen.panelCount} panels · ${kw(deyeGen.solarKw)} solar · ${kwh(deyeGen.batteryKwh)} battery\n`;
+    if(sigGen)  t += `    Sigenergy (premium) ${money(sigGen.finalPrice).padEnd(10)}  ${sigGen.panelCount} panels · ${kw(sigGen.solarKw)} solar · ${kwh(sigGen.batteryKwh)} battery\n`;
+    if(sigFull && sigGen){
+      const save = sigFull.finalPrice - sigGen.finalPrice;
+      if(save > 0) t += `    (Option 2 saves up to ${money(save)} vs Option 1 with Sigenergy)\n`;
+    }
+  }
+
+  t += `\nAll prices include GST and are net of solar/battery rebates (STCs).`;
+  t += `\nSized to comfortably survive a July worst-case hourly simulation for Ballarat, VIC — the hardest solar month in the region.`;
+  t += `\n\nThis is an indicative estimate only. Final pricing depends on site conditions, roof space, travel, and other site-specific factors. Happy to walk through a detailed quote when you're ready.`;
+  t += `\n\nCheers,\n100UP Solar`;
+
+  navigator.clipboard.writeText(t).then(()=>{
+    const btn = document.getElementById('qeCopyBtn');
+    if(btn){ btn.innerHTML = '✅ Copied to clipboard!'; setTimeout(()=>{ btn.innerHTML = '📋 Copy customer quote text'; }, 2500); }
+  }).catch(()=>{
+    // Fallback: select a temp textarea
+    const ta = document.createElement('textarea');
+    ta.value = t;
+    ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.getElementById('qeCopyBtn');
+    if(btn){ btn.innerHTML = '✅ Copied!'; setTimeout(()=>{ btn.innerHTML = '📋 Copy customer quote text'; }, 2500); }
+  });
+}
+
+buildQeOccupantPicker();
+buildQeBedroomPicker();
+
+// ─── GM BOM CALCULATOR ───
+function gmRoundUp(val) { return Math.ceil(val); }
+
+const GM_COST_KEY = '100upGmBomCosts_v1';
+
+// Default unit costs (ex GST) from L&H Wendouree quote 0066286481, 03-06-26
+const GM_DEFAULT_COSTS = {
+  '100-0119':    0.59,   // M12x25mm Nickel Zinc
+  '100-0120':    1.53,   // M12x90mm Nickel Zinc
+  '100-0121':    1.53,   // M12x110mm — quoted under same SKU/price as M12x90
+  '101-0036':    0.28,   // M12 Nut Nickel Zinc
+  '102-0022':    0.37,   // Rubber Cap for ground screw
+  '104-0028':    0.48,   // M12 Washer Nickel Zinc
+  '110-0002-16': 45.85,  // Ground screw 1.6m
+  '153-0003':    12.14,  // Front Post 849mm
+  '154-0005':    21.75,  // Back Post 2119mm
+  '155-0020':    48.28,  // C Purlin Rail 5800mm
+  '158-0014':    3.17,   // Joiner Plate
+  '159-0003':    11.14,  // Brace Arm 1398mm
+  '161-0005':    59.66,  // U Truss 4020mm
+  '301-0027':    2.03,   // Mid Clamp with earthing
+  '302-0059':    2.01,   // End Clamp 35mm
+  '302-0058':    2.01,   // End Clamp 30mm
+  '312-0002':    6.35,   // Brace Arm Sleeve
+  '375-0001':    0.28,   // Spacer
+  '376-0001':    2.12,   // Rail Clamp
+};
+
+let gmCosts = {};
+try { gmCosts = JSON.parse(localStorage.getItem(GM_COST_KEY) || '{}'); } catch(e) {}
+// Fill any missing/zero costs from the L&H quote defaults (saved values always win)
+Object.keys(GM_DEFAULT_COSTS).forEach(code => {
+  if (!(parseFloat(gmCosts[code]) > 0)) gmCosts[code] = GM_DEFAULT_COSTS[code];
+});
+
+function gmSaveCost(code, val) {
+  gmCosts[code] = parseFloat(val) || 0;
+  try { localStorage.setItem(GM_COST_KEY, JSON.stringify(gmCosts)); } catch(e) {}
+  gmUpdateTotals();
+}
+
+function gmResetCosts() {
+  if (!confirm('Overwrite all unit costs with L&H quote 0066286481 (03-06-26) prices?')) return;
+  gmCosts = Object.assign({}, GM_DEFAULT_COSTS);
+  try { localStorage.setItem(GM_COST_KEY, JSON.stringify(gmCosts)); } catch(e) {}
+  calcGmBom();
+}
+
+function gmUpdateTotals() {
+  // Re-read all cost inputs and recompute cost totals without re-rendering rows
+  let totalCost = 0;
+  document.querySelectorAll('#gmBomBody tr[data-qty]').forEach(row => {
+    const qty      = parseFloat(row.dataset.qty) || 0;
+    const code     = row.dataset.code;
+    const unitCost = parseFloat(gmCosts[code]) || 0;
+    const rowCost  = unitCost * qty;
+    totalCost += rowCost;
+    const costCell = row.querySelector('.gm-total-cost');
+    if (costCell) costCell.textContent = rowCost > 0 ? '$' + rowCost.toFixed(2) : '—';
+  });
+  const footCostEl = document.getElementById('gmFootCost');
+  if (footCostEl) footCostEl.textContent = totalCost > 0 ? '$' + fmt(totalCost) : '—';
+  const kpiCostEl = document.getElementById('gmKpiCost');
+  if (kpiCostEl) {
+    kpiCostEl.querySelector('.kpi-val').innerHTML = totalCost > 0
+      ? '$' + fmt(totalCost)
+      : '<span style="color:var(--muted);font-size:13px">Enter costs</span>';
+  }
+}
+
+function calcGmBom() {
+  const panelWidth   = parseFloat(document.getElementById('gmPanelWidth').value)   || 0;
+  const panelThick   = parseInt(document.getElementById('gmPanelThick').value)      || 35;
+  const panelPower   = parseFloat(document.getElementById('gmPanelPower').value)    || 0;
+  const panelsPerRow = parseInt(document.getElementById('gmPanelsPerRow').value)    || 0;
+  const numArrays    = parseInt(document.getElementById('gmNumArrays').value)       || 0;
+
+  if (!panelWidth || !panelsPerRow || !numArrays) {
+    document.getElementById('gmBomBody').innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">Enter all values above</td></tr>';
+    document.getElementById('gmKpis').innerHTML = '';
+    return;
+  }
+
+  // --- Derived geometry (from Excel) ---
+  const spacing    = 2700;
+  const overhang   = 300;
+  const railLen    = 5800;
+
+  const arrayLength     = panelWidth * panelsPerRow + 16 * (panelsPerRow - 1) + 90;
+  const realisedSpacing = (arrayLength - overhang * 2) / gmRoundUp((arrayLength - overhang * 2) / spacing);
+  const railUnits       = arrayLength / railLen;
+
+  // --- Per-array quantities ---
+  const groundScrews = (gmRoundUp((arrayLength - overhang * 2 - spacing * 0.8 * 2) / spacing) + 1 + 2) * 2;
+  const joiners      = 4 * (gmRoundUp(arrayLength / 5775) - 1);
+  const uTruss       = groundScrews / 2;
+  const rails        = gmRoundUp(railUnits) * 4;
+  const frontPost    = groundScrews / 2;
+  const backPost     = groundScrews / 2;
+  const braceArm     = groundScrews;
+  const braceSlv     = groundScrews;
+  const spacer       = braceArm * 2;
+  const railClamp    = uTruss * 4;
+  const midClamp     = (panelsPerRow - 1) * 4;
+  const endClamp     = 8;
+  const hdgScrews    = groundScrews * 3;
+  const rubberCap    = groundScrews;
+  const m12x110      = groundScrews;
+  const m12x90       = 4 * uTruss;
+  const m12x25       = 10 * joiners;
+  const m12Nut       = m12x25 + m12x110 + m12x90;
+  const m12Washer    = 2 * (m12x90 + m12x110 + m12x25) - joiners * 2;
+
+  const endClampPart = panelThick === 35 ? '302-0059' : '302-0058';
+  const endClampDesc = panelThick === 35 ? 'End Clamp with Earthing, 35mm' : 'End Clamp with Earthing, 30mm';
+
+  const bomRows = [
+    { code:'100-0119',   desc:'M12x25mm Nickel Zinc',               sku:'RDRGM-NZ-M12X25',     perArray: m12x25,       wt: 0.042  },
+    { code:'100-0120',   desc:'M12x90mm Nickel Zinc',               sku:'RDRGM-NZ-M12X90',     perArray: m12x90,       wt: 0.100  },
+    { code:'100-0121',   desc:'M12x110mm Nickel Zinc',              sku:'RDRGM-NZ-M12X90',     perArray: m12x110,      wt: 0.110  },
+    { code:'101-0036',   desc:'M12 Nut Nickel Zinc',                sku:'RDRGM-NZ-M12-NUT',    perArray: m12Nut,       wt: 0.020  },
+    { code:'102-0022',   desc:'Rubber Cap for ground screw',        sku:'RDRGM-RUBBER-GS',     perArray: rubberCap,    wt: 0.024  },
+    { code:'104-0028',   desc:'M12 Washer, Nickel Zinc',            sku:'RDRGM-NZ-M12-WASHER', perArray: m12Washer,    wt: 0.012  },
+    { code:'110-0002-16',desc:'Ground screw, 1.6m, Std Thread',     sku:'RDRGM-GS-1.6M',       perArray: groundScrews, wt: 8.350  },
+    { code:'100-0131',   desc:'HDG Screws for ground screw',        sku:'—',                   perArray: hdgScrews,    wt: 0      },
+    { code:'153-0003',   desc:'Front Post 849mm',                   sku:'RDRGM-FRONTPOST',     perArray: frontPost,    wt: 2.970  },
+    { code:'154-0005',   desc:'Back Post 2119mm',                   sku:'RDRGM-BACKPOST',      perArray: backPost,     wt: 7.400  },
+    { code:'155-0020',   desc:'C Purlin Rail 100x50x1.5mm, 5800mm', sku:'RDRGM-CPURLIN',      perArray: rails,        wt: 14.860 },
+    { code:'158-0014',   desc:'Joiner Plate',                       sku:'RDRGM-JOINER',        perArray: joiners,      wt: 0.670  },
+    { code:'159-0003',   desc:'Brace Arm, 1398mm',                  sku:'RDRGM-BRACE',         perArray: braceArm,     wt: 2.780  },
+    { code:'161-0005',   desc:'U Truss 1.5mm, 4020mm, 20-25-30°',  sku:'RDRGM-UTRUSS',        perArray: uTruss,       wt: 12.800 },
+    { code:'301-0027',   desc:'Mid Clamp with earthing',            sku:'RDRGM-MIDCLAMP/G',    perArray: midClamp,     wt: 0.110  },
+    { code:endClampPart, desc:endClampDesc,                         sku:'RDRGM-ENDCLAMP',      perArray: endClamp,     wt: 0.115  },
+    { code:'312-0002',   desc:'Brace Arm Sleeve',                   sku:'RDRGM-SLEEVE',        perArray: braceSlv,     wt: 0.215  },
+    { code:'375-0001',   desc:'Spacer',                             sku:'RDRGM-SPACER',        perArray: spacer,       wt: 0.100  },
+    { code:'376-0001',   desc:'Rail Clamp',                         sku:'RDRGM-RAILCLMAP',     perArray: railClamp,    wt: 0.105  },
+  ];
+
+  const costInputStyle = `width:72px;text-align:right;padding:3px 6px;border-radius:4px;border:1px solid var(--border);background:var(--surface2);color:var(--ink);font-size:11px;font-family:var(--mono)`;
+
+  let totalWeightKg = 0;
+  let totalCost     = 0;
+
+  const tbody = document.getElementById('gmBomBody');
+  tbody.innerHTML = bomRows.map(r => {
+    const totalQty  = Math.round(r.perArray * numArrays * 10) / 10;
+    const rowWt     = r.wt * totalQty;
+    const unitCost  = parseFloat(gmCosts[r.code]) || 0;
+    const rowCost   = unitCost * totalQty;
+    totalWeightKg  += rowWt;
+    totalCost      += rowCost;
+    return `<tr data-code="${r.code}" data-qty="${totalQty}">
+      <td style="font-family:var(--mono);font-size:10px;color:var(--muted)">${r.code}</td>
+      <td style="font-size:12px">${r.desc}</td>
+      <td style="font-family:var(--mono);font-size:10px;color:var(--muted)">${r.sku}</td>
+      <td style="text-align:right;font-family:var(--mono);font-size:12px">${Math.round(r.perArray * 10) / 10}</td>
+      <td style="text-align:right;font-family:var(--mono);font-size:12px;font-weight:600">${totalQty}</td>
+      <td style="text-align:right;font-family:var(--mono);font-size:12px;color:var(--muted)">${rowWt > 0 ? rowWt.toFixed(1) : '—'}</td>
+      <td style="text-align:right;padding:4px 10px">
+        <input type="number" min="0" step="0.01" style="${costInputStyle}"
+          value="${unitCost > 0 ? unitCost : ''}" placeholder="0.00"
+          onchange="gmSaveCost('${r.code}',this.value)"
+          oninput="gmSaveCost('${r.code}',this.value)">
+      </td>
+      <td style="text-align:right;font-family:var(--mono);font-size:12px;color:var(--accent)" class="gm-total-cost">${rowCost > 0 ? '$' + rowCost.toFixed(2) : '—'}</td>
+    </tr>`;
+  }).join('');
+
+  const totalPanels = panelsPerRow * 2 * numArrays;
+  const totalPower  = panelsPerRow * 2 * panelPower * numArrays / 1000;
+
+  document.getElementById('gmBomFoot').innerHTML = `
+    <tr style="border-top:2px solid var(--border)">
+      <td colspan="5" style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;padding-top:10px">Totals</td>
+      <td style="text-align:right;font-weight:700;font-family:var(--mono);color:var(--muted);padding-top:10px">${totalWeightKg.toFixed(1)} kg</td>
+      <td></td>
+      <td id="gmFootCost" style="text-align:right;font-weight:700;font-family:var(--mono);color:var(--accent);padding-top:10px">${totalCost > 0 ? '$' + fmt(totalCost) : '—'}</td>
+    </tr>`;
+
+  document.getElementById('gmKpis').innerHTML = `
+    <div class="kpi"><div class="kpi-val">${arrayLength.toFixed(0)}<span class="kpi-unit">mm</span></div><div class="kpi-label">Array length</div></div>
+    <div class="kpi"><div class="kpi-val">${realisedSpacing.toFixed(0)}<span class="kpi-unit">mm</span></div><div class="kpi-label">Realised spacing</div></div>
+    <div class="kpi"><div class="kpi-val">${totalPanels}<span class="kpi-unit">panels</span></div><div class="kpi-label">Total panels</div></div>
+    <div class="kpi"><div class="kpi-val">${totalPower > 0 ? totalPower.toFixed(2) : '—'}<span class="kpi-unit">kW</span></div><div class="kpi-label">Total power</div></div>
+    <div class="kpi"><div class="kpi-val">${totalWeightKg.toFixed(1)}<span class="kpi-unit">kg</span></div><div class="kpi-label">Total weight</div></div>
+    <div id="gmKpiCost" class="kpi"><div class="kpi-val">${totalCost > 0 ? '$' + fmt(totalCost) : '<span style="color:var(--muted);font-size:13px">Enter costs</span>'}</div><div class="kpi-label">Parts cost</div></div>`;
+}
+
+function printGmBom(){
+  const panelsPerRow = parseInt(document.getElementById('gmPanelsPerRow').value)||6;
+  const numArrays    = parseInt(document.getElementById('gmNumArrays').value)||1;
+  const panelPower   = parseInt(document.getElementById('gmPanelPower').value)||490;
+  const totalPanels  = panelsPerRow * 2 * numArrays;
+  const totalPower   = (panelsPerRow * 2 * panelPower * numArrays / 1000).toFixed(2);
+
+  const thead = document.querySelector('#gmBomWrap thead').outerHTML;
+  const tbody = document.getElementById('gmBomBody').innerHTML;
+  const tfoot = document.getElementById('gmBomFoot').innerHTML;
+  const kpis  = document.getElementById('gmKpis').innerHTML;
+
+  const cleanBody = tbody.replace(/<input[^>]*value="([^"]*)"[^>]*>/g, (_,v)=>
+    `<span style="font-family:monospace;font-size:11px">${v ? '$'+parseFloat(v).toFixed(2) : '—'}</span>`
+  );
+
+  const now = new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+
+  const win = window.open('','_blank','width=900,height=700');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
+  <title>Ground Mount BOM</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:24px 28px}
+    h1{font-size:18px;font-weight:700;margin-bottom:2px}
+    .sub{font-size:11px;color:#666;margin-bottom:14px}
+    .kpi-strip{display:flex;gap:16px;flex-wrap:wrap;background:#f4f4f4;border-radius:6px;padding:10px 14px;margin-bottom:16px}
+    .kpi{display:flex;flex-direction:column;align-items:center;min-width:70px}
+    .kpi-val{font-size:17px;font-weight:700;color:#1a1a1a}
+    .kpi-unit{font-size:10px;font-weight:400;color:#888;margin-left:1px}
+    .kpi-label{font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+    table{width:100%;border-collapse:collapse;font-size:11px}
+    th{background:#1a1a1a;color:#fff;padding:7px 8px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.4px}
+    th.r,td.r{text-align:right}
+    td{padding:6px 8px;border-bottom:1px solid #e8e8e8}
+    tr:nth-child(even) td{background:#fafafa}
+    tfoot td{font-weight:700;border-top:2px solid #ccc;padding-top:8px}
+    .mono{font-family:monospace;font-size:10px;color:#555}
+    .footer{margin-top:20px;font-size:9px;color:#aaa;border-top:1px solid #e0e0e0;padding-top:8px}
+    @media print{body{padding:12px 14px}}
+  </style></head><body>
+  <h1>⛏️ Ground Mount Bill of Materials</h1>
+  <div class="sub">Generated ${now} &nbsp;·&nbsp; ${totalPanels} panels &nbsp;·&nbsp; ${totalPower} kW &nbsp;·&nbsp; ${numArrays} array${numArrays>1?'s':''}</div>
+  <div class="kpi-strip">${kpis}</div>
+  <table>
+    ${thead}
+    <tbody>${cleanBody}</tbody>
+    <tfoot><tr>${tfoot}</tr></tfoot>
+  </table>
+  <div class="footer">100UP Solar · Ground Mount BOM Calculator</div>
+  <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+calcGmBom();
+
+</script>
+</body>
+</html>
