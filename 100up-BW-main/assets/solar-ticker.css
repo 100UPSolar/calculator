@@ -1,0 +1,98 @@
+/* ============================================================
+   SOLAR TICKER
+   [100up-solar-ticker] shortcode
+   ============================================================ */
+
+.up100-solar-ticker-root {
+	width: 100%;
+}
+
+.up100-ticker-bar {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+	padding: 12px 20px;
+	border-radius: 8px;
+	background: var(--up100-light);
+	border: 1px solid var(--up100-border);
+	transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+.up100-ticker-badge {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
+}
+
+.up100-ticker-icon {
+	font-size: 20px;
+	line-height: 1;
+}
+
+.up100-ticker-label {
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	color: var(--up100-muted);
+}
+
+.up100-ticker-msg {
+	flex: 1;
+	min-width: 200px;
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--up100-dark);
+}
+
+.up100-ticker-cta {
+	flex-shrink: 0;
+	display: inline-block;
+	padding: 8px 18px;
+	background: var(--up100-accent);
+	color: #fff !important;
+	font-size: 13px;
+	font-weight: 700;
+	text-decoration: none;
+	border-radius: 6px;
+	white-space: nowrap;
+	transition: background 0.2s, transform 0.15s;
+}
+
+.up100-ticker-cta:hover {
+	background: #a01830;
+	transform: translateY(-1px);
+}
+
+.up100-ticker-meta {
+	width: 100%;
+	font-size: 11px;
+	color: var(--up100-muted);
+	padding-top: 2px;
+}
+
+/* Condition state modifiers */
+.up100-ticker--none     { background: #f1f0ee; border-color: #ddd; }
+.up100-ticker--low      { background: #f3f4f6; border-color: #d1d5db; }
+.up100-ticker--moderate { background: #fffbeb; border-color: #fde68a; }
+.up100-ticker--good     { background: #fff7ed; border-color: #fed7aa; }
+.up100-ticker--great    { background: #fefce8; border-color: #fef08a; }
+.up100-ticker--excellent{ background: #f0fdf4; border-color: #bbf7d0; }
+
+.up100-ticker--moderate .up100-ticker-label,
+.up100-ticker--good     .up100-ticker-label { color: #92400e; }
+.up100-ticker--great    .up100-ticker-label { color: #713f12; }
+.up100-ticker--excellent .up100-ticker-label { color: #14532d; }
+
+@media (max-width: 600px) {
+	.up100-ticker-bar {
+		padding: 12px 14px;
+	}
+	.up100-ticker-cta {
+		width: 100%;
+		text-align: center;
+	}
+}
